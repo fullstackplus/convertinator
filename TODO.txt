@@ -1,0 +1,11 @@
+#TODO
+
+1. Traverse and concatenate all files into a single .mdown file
+2. As above, but convert the final file to .html
+3. Options for converting files in their own separate dirs, at the same level as the .mdown source file
+4. As above, but with the option of convering all of the individual files into one big resultant .html file.
+
+Read up on passing args to command line scripts. 
+
+#DONE
+0. Traverse all dirs recursively from root, printing their names 
