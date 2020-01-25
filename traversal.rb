@@ -78,6 +78,19 @@ end
 # Convertinator::traverse_and_print('.')
 Convertinator::concatenate('.')
 
+# Desired API:
+#
+# def concatenate(startdir, output)
+#   self.create_file(startdir, output)
+#   self.traverse_and_concatenate(startdir, args, output)
+# end
+#
+# Calling:
+#
+# Convertinator::concatenate('.', "concatenated.mdown")
+#
+# The point is to move the file creation out of the concatenate() method.
+
 
 require 'minitest/spec'
 require 'minitest/autorun'
