@@ -35,28 +35,21 @@ module Convertinator
     end
   end
 
-# Desired API:
-#
-# def merge_markdown(startdir, output)
-#   self.create_file(startdir, output)
-#   self.traverse_and_merge(startdir, args, output)
-# end
-#
-# Calling:
-#
-# Convertinator::merge_markdown('.', outupt = "concatenated.mdown")
-#
-# The point is to move the file creation out of the concatenate() method.
-def self.merge_markdown(startdir, outputfile="concatenated.mdown")
-  self.create_file(startdir, outputfile)
-  self.traverse_and_merge(startdir, outputfile)
-end
-
-  # TESTME
-  # (str) -> bool
-  def self.markdown?(path)
-    File.file?(path) &&
-    File.extname(path).downcase.eql?('.mdown')
+  # Desired API:
+  #
+  # def merge_markdown(startdir, output)
+  #   self.create_file(startdir, output)
+  #   self.traverse_and_merge(startdir, args, output)
+  # end
+  #
+  # Calling:
+  #
+  # Convertinator::merge_markdown('.', outupt = "concatenated.mdown")
+  #
+  # The point is to move the file creation out of the concatenate() method.
+  def self.merge_markdown(startdir, outputfile="concatenated.mdown")
+    self.create_file(startdir, outputfile)
+    self.traverse_and_merge(startdir, outputfile)
   end
 
   # (str, str) -> nil
@@ -68,14 +61,27 @@ end
     end
   end
 
-  # if file
-  #   concatenate
-  # recursively continue traversal
+  # (str) -> Regex | nil
+  def self.content?(path)
+    File.basename(path).match /^\d/
+  end
+
+  # (str) -> bool
+  def self.markdown?(path)
+    File.file?(path) &&
+    File.extname(path).downcase.eql?('.mdown')
+  end
+
+  #
+  # if content?
+  #   if file?
+  #     if markdown?
+  #       merge with output file
+  #   else if directory?
+  #     recur
   #
   # (str, file, depth) -> nil
   def self.traverse_and_merge(startdir, outputfile, indent="", depth=1)
-
-    # binding.pry
 
     Dir.foreach(startdir) do |filename|
       path = File.join(startdir, filename)
@@ -83,17 +89,22 @@ end
       if filename == "." or filename == ".."
         next
 
-      # concatenate files here
-      elsif File.file?(path)
-        if File.extname(path).downcase.eql?('.mdown')
-          puts [indent, filename].join
-        end
-        next
+      elsif content? path
+        if markdown? path
+            puts [indent, filename].join
 
-      else File.directory?(path)
-        puts [indent, path, "/"].join
-        traverse_and_merge(path, outputfile, [indent, '    '].join, depth.next)
+            File.open(outputfile, "a") do |f|
+              f.write File.open(path).read
+              f.write "\n"
+            end
+          next
+
+        else File.directory?(path)
+          puts [indent, path, "/"].join
+          traverse_and_merge(path, outputfile, [indent, '    '].join, depth.next)
+        end
       end
+
     end
   end
 end
@@ -108,15 +119,25 @@ describe "tests for merging markdown files and converting them into HTML" do
   end
 
   it "merges markdown files across nested directories" do
-
-   # TODO:
-   # 1) don't overwrite the output file with itself
-   # 2) don't traverse Git directories.
-   #
    Convertinator::merge_markdown('.')
-   # file_contents = File.open(path).read
-   #
-   # TODO:
-   # file_contents.must_equal contents of a local file (EOS, EOA etc).
+   file_contents = File.open(path).read
+   file_contents.must_equal <<-EOT
+#FILE 1
+
+Contents of file one.
+
+#FILE 2
+
+Contents of file two.
+
+#FILE 3
+
+Contents of file three.
+
+#FILE 4
+
+Contents of file four.
+
+                               EOT
   end
 end
