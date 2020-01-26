@@ -10,6 +10,10 @@ RENDERER = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tabl
 
 # See Desktop/es/workshops/IL/EN/html_renderer.rb for details.
 
+# API:
+# Convertinator::traverse_and_print('.')
+# Convertinator::merge_markdown('.')
+# Convertinator::to_html('.')
 module Convertinator
 
   # (str, str) ->
@@ -31,6 +35,24 @@ module Convertinator
     end
   end
 
+# Desired API:
+#
+# def merge_markdown(startdir, output)
+#   self.create_file(startdir, output)
+#   self.traverse_and_merge(startdir, args, output)
+# end
+#
+# Calling:
+#
+# Convertinator::merge_markdown('.', outupt = "concatenated.mdown")
+#
+# The point is to move the file creation out of the concatenate() method.
+def self.merge_markdown(startdir, outputfile="concatenated.mdown")
+  self.create_file(startdir, outputfile)
+  self.traverse_and_merge(startdir, outputfile)
+end
+
+  # TESTME
   # (str) -> bool
   def self.markdown?(path)
     File.file?(path) &&
@@ -38,9 +60,9 @@ module Convertinator
   end
 
   # (str, str) -> nil
-  def self.create_file(filename)
-    path = File.join(Dir.pwd, filename)
-    # path = File.join(startdir, filename)
+  def self.create_file(startdir, outputfile)
+    # path = File.join(Dir.pwd, outputfile)
+    path = File.join(startdir, outputfile)
     unless File.file? path
       File.open(path, 'w') { |f| f.write '' }
     end
@@ -50,10 +72,10 @@ module Convertinator
   #   concatenate
   # recursively continue traversal
   #
-  # (str, file, depth) -> file
-  def self.concatenate(startdir, indent="", depth=1)
+  # (str, file, depth) -> nil
+  def self.traverse_and_merge(startdir, outputfile, indent="", depth=1)
 
-    binding.pry
+    # binding.pry
 
     Dir.foreach(startdir) do |filename|
       path = File.join(startdir, filename)
@@ -61,6 +83,7 @@ module Convertinator
       if filename == "." or filename == ".."
         next
 
+      # concatenate files here
       elsif File.file?(path)
         if File.extname(path).downcase.eql?('.mdown')
           puts [indent, filename].join
@@ -69,49 +92,31 @@ module Convertinator
 
       else File.directory?(path)
         puts [indent, path, "/"].join
-        concatenate(path, [indent, '    '].join, depth.next)
+        traverse_and_merge(path, outputfile, [indent, '    '].join, depth.next)
       end
     end
   end
 end
 
-# Convertinator::traverse_and_print('.')
-Convertinator::concatenate('.')
-
-# Desired API:
-#
-# def concatenate(startdir, output)
-#   self.create_file(startdir, output)
-#   self.traverse_and_concatenate(startdir, args, output)
-# end
-#
-# Calling:
-#
-# Convertinator::concatenate('.', "concatenated.mdown")
-#
-# The point is to move the file creation out of the concatenate() method.
-
-
 require 'minitest/spec'
 require 'minitest/autorun'
 
-describe "tests" do
+describe "tests for merging markdown files and converting them into HTML" do
   path = File.join(Dir.pwd, "concatenated.mdown")
   before do
     File.delete(path) if File.exist?(path)
   end
 
-  it "passes all tests" do
-   contents = 'Contents of file one. Contents of file two. Contents of file three.'
+  it "merges markdown files across nested directories" do
 
-   # TODO: function must return a file
-   # Convertinator::concatenate('.')
-
-   # binding.pry
-
+   # TODO:
+   # 1) don't overwrite the output file with itself
+   # 2) don't traverse Git directories.
+   #
+   Convertinator::merge_markdown('.')
    # file_contents = File.open(path).read
-
-   #TODO: recursive call doesn't work
-   # file_contents.must_equal contents
+   #
+   # TODO:
+   # file_contents.must_equal contents of a local file (EOS, EOA etc).
   end
 end
