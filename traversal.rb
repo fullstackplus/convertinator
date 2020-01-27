@@ -61,9 +61,12 @@ module Convertinator
     end
   end
 
+  # Match at the start of the line: one or more digit,
+  # followed by a single dash, followed by any text.
+  #
   # (str) -> Regex | nil
   def self.content?(path)
-    File.basename(path).match /^\d/
+    File.basename(path).match /^[0-9]+\-{1}\w/
   end
 
   # (str) -> bool
