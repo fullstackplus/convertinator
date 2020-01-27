@@ -44,10 +44,10 @@ module Convertinator
   #
   # Calling:
   #
-  # Convertinator::merge_markdown('.', outupt = "concatenated.mdown")
+  # Convertinator::merge_markdown('.', outupt = "merged.mdown")
   #
   # The point is to move the file creation out of the concatenate() method.
-  def self.merge_markdown(startdir, outputfile="concatenated.mdown")
+  def self.merge_markdown(startdir, outputfile="merged.mdown")
     self.create_file(startdir, outputfile)
     self.traverse_and_merge(startdir, outputfile)
   end
@@ -110,13 +110,28 @@ module Convertinator
 
     end
   end
+
+  # TODO
+  def self.to_html(startdir, inputfile="merged.mdown", outputfile="file.html")
+    merge_markdown(startdir, inputfile)
+
+    input_path = File.join(startdir, inputfile)
+    output_path = File.join(startdir, outputfile)
+
+    html = RENDERER.render(File.read(input_path))
+    File.open(output_path, 'w') do |f|
+      # f.write File.read 'header.html'
+      f.write html
+      # f.write File.read 'footer.html'
+    end
+  end
 end
 
 require 'minitest/spec'
 require 'minitest/autorun'
 
 describe "tests for merging markdown files and converting them into HTML" do
-  path = File.join(Dir.pwd, "concatenated.mdown")
+  path = File.join(Dir.pwd, "merged.mdown")
   before do
     File.delete(path) if File.exist?(path)
   end
@@ -142,5 +157,10 @@ Contents of file three.
 Contents of file four.
 
                                EOT
+  end
+
+  it "converts Markdown to HTML" do
+    # TODO: test file exists
+    Convertinator::to_html('.')
   end
 end
