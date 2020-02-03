@@ -97,7 +97,7 @@ module Convertinator
             puts [indent, filename].join
 
             File.open(outputfile, "a") do |f|
-              f.write File.open(path).read
+              f.write File.read path
               f.write "\n"
             end
           next
@@ -114,15 +114,13 @@ module Convertinator
   # TODO
   def self.to_html(startdir, inputfile="merged.mdown", outputfile="file.html")
     merge_markdown(startdir, inputfile)
-
     input_path = File.join(startdir, inputfile)
     output_path = File.join(startdir, outputfile)
-
     html = RENDERER.render(File.read(input_path))
     File.open(output_path, 'w') do |f|
-      # f.write File.read 'header.html'
+      f.write File.read 'html/header.html'
       f.write html
-      # f.write File.read 'footer.html'
+      f.write File.read 'html/footer.html'
     end
   end
 end
@@ -160,7 +158,7 @@ Contents of file four.
   end
 
   it "converts Markdown to HTML" do
-    # TODO: test file exists
     Convertinator::to_html('.')
+    File.file?('file.html').must_equal true
   end
 end
