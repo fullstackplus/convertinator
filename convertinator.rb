@@ -111,7 +111,6 @@ module Convertinator
     end
   end
 
-  # TODO
   def self.to_html(startdir, inputfile="merged.mdown", outputfile="file.html")
     merge_markdown(startdir, inputfile)
     input_path = File.join(startdir, inputfile)
@@ -123,21 +122,25 @@ module Convertinator
       f.write File.read 'html/footer.html'
     end
   end
+
+  def self.convert_dir(path)
+  end
+
+  def self.convert_file(path)
+  end
 end
 
 require 'minitest/spec'
 require 'minitest/autorun'
 
 describe "tests for merging markdown files and converting them into HTML" do
-  path = File.join(Dir.pwd, "merged.mdown")
+  merged = File.join(Dir.pwd, "merged.mdown")
   before do
-    File.delete(path) if File.exist?(path)
+    File.delete(merged) if File.exist?(merged)
+    File.delete('file.html') if File.exist?('file.html')
   end
 
-  it "merges markdown files across nested directories" do
-   Convertinator::merge_markdown('.')
-   file_contents = File.open(path).read
-   file_contents.must_equal <<-EOT
+  merged_contents = <<-EOT
 #FILE 1
 
 Contents of file one.
@@ -154,11 +157,32 @@ Contents of file three.
 
 Contents of file four.
 
-                               EOT
+                       EOT
+
+  it "merges markdown files across nested directories" do
+   Convertinator::merge_markdown('.')
+   File.read(merged).must_equal merged_contents
   end
 
-  it "converts Markdown to HTML" do
+  it "converts Markdown to HTML from default directory (root)" do
     Convertinator::to_html('.')
     File.file?('file.html').must_equal true
+  end
+
+  # TODO
+  it "converts Markdown to HTML from specified directory" do
+   Convertinator::convert_dir('underdir')
+   # File.read(merged).must_equal merged_contents
+   # File.file?('file.html').must_equal true
+  end
+
+  it "converts specified file from Markdown to HTML" do
+   Convertinator::convert_file('3-dir/1-file.mdown')
+#    File.read(merged).must_equal <<-EOT
+# #FILE 3
+
+# Contents of file three.
+
+#                                    EOT
   end
 end
