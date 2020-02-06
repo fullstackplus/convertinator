@@ -75,7 +75,6 @@ module Convertinator
     File.extname(path).downcase.eql?('.mdown')
   end
 
-  #
   # if content?
   #   if file?
   #     if markdown?
@@ -111,10 +110,14 @@ module Convertinator
     end
   end
 
-  def self.to_html(startdir, inputfile="merged.mdown", outputfile="file.html")
+  def self.convert_dir(startdir, inputfile="merged.mdown", outputfile="file.html")
     merge_markdown(startdir, inputfile)
     input_path = File.join(startdir, inputfile)
     output_path = File.join(startdir, outputfile)
+    to_html(input_path, output_path)
+  end
+
+  def self.to_html(input_path, output_path)
     html = RENDERER.render(File.read(input_path))
     File.open(output_path, 'w') do |f|
       f.write File.read 'html/header.html'
@@ -123,10 +126,12 @@ module Convertinator
     end
   end
 
-  def self.convert_dir(path)
-  end
-
-  def self.convert_file(path)
+  def self.convert_file(inputfile)
+   # set name of outputfile to name of inputfile
+   markdown = File.basename inputfile
+   filename = markdown.split('.')[0]
+   outputpath = File.join(Dir.pwd, "#{filename}.html")
+   to_html(inputfile, outputpath)
   end
 end
 
@@ -165,24 +170,18 @@ Contents of file four.
   end
 
   it "converts Markdown to HTML from default directory (root)" do
-    Convertinator::to_html('.')
-    File.file?('file.html').must_equal true
+    # Convertinator::convert_dir('.')
+    # File.file?('file.html').must_equal true
   end
 
-  # TODO
   it "converts Markdown to HTML from specified directory" do
-   Convertinator::convert_dir('underdir')
+   # Convertinator::convert_dir('underdir')
    # File.read(merged).must_equal merged_contents
    # File.file?('file.html').must_equal true
   end
 
   it "converts specified file from Markdown to HTML" do
-   Convertinator::convert_file('3-dir/1-file.mdown')
-#    File.read(merged).must_equal <<-EOT
-# #FILE 3
-
-# Contents of file three.
-
-#                                    EOT
+   # Convertinator::convert_file('3-dir/1-file.mdown')
+   # File.file?('1-file.html').must_equal true
   end
 end
