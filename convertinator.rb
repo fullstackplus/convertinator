@@ -110,6 +110,7 @@ module Convertinator
     end
   end
 
+  # TODO: output final file at top-level directory only
   def self.convert_dir(startdir, inputfile="merged.mdown", outputfile="file.html")
     merge_markdown(startdir, inputfile)
     input_path = File.join(startdir, inputfile)
