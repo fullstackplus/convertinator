@@ -3,6 +3,7 @@ require 'pry'
 
 # import renderer object
 RENDERER = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true)
+OUTPUTDIR = '/build'
 
 # Usage:
 # markdown = File.read file
@@ -15,6 +16,14 @@ RENDERER = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tabl
 # Convertinator::merge_markdown('.')
 # Convertinator::to_html('.')
 module Convertinator
+
+  def self.buildfile_path(filename)
+   File.join(Dir.pwd, OUTPUTDIR, 'lib', filename)
+  end
+
+  def self.output_path(filename)
+   File.join(Dir.pwd, OUTPUTDIR, filename)
+  end
 
   # (str, str) ->
   def self.traverse_and_print(startdir, indent='')
@@ -48,16 +57,15 @@ module Convertinator
   #
   # The point is to move the file creation out of the concatenate() method.
   def self.merge_markdown(startdir, outputfile="merged.mdown")
-    self.create_file(startdir, outputfile)
-    self.traverse_and_merge(startdir, outputfile)
+    outputpath = output_path(outputfile)
+    self.create_file(outputpath)
+    self.traverse_and_merge(startdir, outputpath)
   end
 
-  # (str, str) -> nil
-  def self.create_file(startdir, outputfile)
-    # path = File.join(Dir.pwd, outputfile)
-    path = File.join(startdir, outputfile)
-    unless File.file? path
-      File.open(path, 'w') { |f| f.write '' }
+  # (str) -> nil
+  def self.create_file(outputpath)
+    unless File.file? outputpath
+      File.open(outputpath, 'w') { |f| f.write '' }
     end
   end
 
@@ -83,7 +91,7 @@ module Convertinator
   #     recur
   #
   # (str, file, depth) -> nil
-  def self.traverse_and_merge(startdir, outputfile, indent="", depth=1)
+  def self.traverse_and_merge(startdir, outputpath, indent="", depth=1)
 
     Dir.foreach(startdir) do |filename|
       path = File.join(startdir, filename)
@@ -95,7 +103,7 @@ module Convertinator
         if markdown? path
             puts [indent, filename].join
 
-            File.open(outputfile, "a") do |f|
+            File.open(outputpath, "a") do |f|
               f.write File.read path
               f.write "\n"
             end
@@ -103,7 +111,7 @@ module Convertinator
 
         else File.directory?(path)
           puts [indent, path, "/"].join
-          traverse_and_merge(path, outputfile, [indent, '    '].join, depth.next)
+          traverse_and_merge(path, outputpath, [indent, '    '].join, depth.next)
         end
       end
 
@@ -112,18 +120,19 @@ module Convertinator
 
   # TODO: output final file at top-level directory only
   def self.convert_dir(startdir, inputfile="merged.mdown", outputfile="file.html")
+    input_path = output_path(inputfile)
     merge_markdown(startdir, inputfile)
-    input_path = File.join(startdir, inputfile)
-    output_path = File.join(startdir, outputfile)
-    to_html(input_path, output_path)
+
+    outputpath = output_path(outputfile)
+    to_html(input_path, outputpath)
   end
 
-  def self.to_html(input_path, output_path)
+  def self.to_html(input_path, path)
     html = RENDERER.render(File.read(input_path))
-    File.open(output_path, 'w') do |f|
-      f.write File.read 'html/header.html'
+    File.open(path, 'w') do |f|
+      f.write(File.read(buildfile_path('header.html')))
       f.write html
-      f.write File.read 'html/footer.html'
+      f.write(File.read(buildfile_path('footer.html')))
     end
   end
 
@@ -140,10 +149,11 @@ require 'minitest/spec'
 require 'minitest/autorun'
 
 describe "tests for merging markdown files and converting them into HTML" do
-  merged = File.join(Dir.pwd, "merged.mdown")
+  markdown = Convertinator::output_path('merged.mdown')
+  html     = Convertinator::output_path('file.html')
   before do
-    File.delete(merged) if File.exist?(merged)
-    File.delete('file.html') if File.exist?('file.html')
+    File.delete(markdown) if File.exist?(markdown)
+    File.delete(html) if File.exist?(html)
   end
 
   merged_contents = <<-EOT
@@ -167,12 +177,12 @@ Contents of file four.
 
   it "merges markdown files across nested directories" do
    Convertinator::merge_markdown('.')
-   File.read(merged).must_equal merged_contents
+   File.read(markdown).must_equal merged_contents
   end
 
   it "converts Markdown to HTML from default directory (root)" do
-    # Convertinator::convert_dir('.')
-    # File.file?('file.html').must_equal true
+    Convertinator::convert_dir('.')
+    File.file?(html).must_equal true
   end
 
   it "converts Markdown to HTML from specified directory" do
