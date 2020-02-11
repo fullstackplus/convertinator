@@ -197,8 +197,8 @@ Contents of file four.
 
   it "converts specified file from Markdown to HTML" do
    Convertinator::convert_file('3-dir/1-file.mdown')
-   converted_file = Convertinator::output_path('1-file.html')
-   File.file?(converted_file).must_equal true
-   File.delete(converted_file)
+   converted = Convertinator::output_path('1-file.html')
+   File.file?(converted).must_equal true
+   File.delete(converted)
   end
 end
