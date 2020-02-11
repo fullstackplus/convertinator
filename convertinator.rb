@@ -118,6 +118,7 @@ module Convertinator
     end
   end
 
+  # FIXME: dir names
   def self.convert_dir(startdir, inputfile="merged.mdown", outputfile="file.html")
     input_path = output_path(inputfile)
     merge_markdown(startdir, inputfile)
