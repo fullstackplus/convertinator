@@ -118,22 +118,19 @@ module Convertinator
     end
   end
 
-  # FIXME: dir names
   def self.convert_dir(startdir, inputfile="merged.mdown", outputfile="file.html")
-    input_path = output_path(inputfile)
     merge_markdown(startdir, inputfile)
-
-    outputpath = output_path(outputfile)
-    to_html(input_path, outputpath)
+    input  = output_path(inputfile)
+    output = output_path(outputfile)
+    to_html(input, output)
   end
 
-  # TODO: save to output dir
   def self.convert_file(inputfile)
-    # set name of outputfile to name of inputfile
     markdown = File.basename inputfile
     filename = markdown.split('.')[0]
-    outputpath = File.join(Dir.pwd, "#{filename}.html")
-    to_html(inputfile, outputpath)
+    # set name of outputfile to that of inputfile:
+    output = output_path("#{filename}.html")
+    to_html(inputfile, output)
   end
 
   def self.to_html(inputfile, outputpath)
@@ -187,23 +184,21 @@ Contents of file four.
   end
 
   it "converts Markdown to HTML using custom params for source directory and filenames" do
-   Convertinator::convert_dir('underdir', inputfile="underdir.mdown", outputfile="underdir.html")
+   Convertinator::convert_dir('underdir', inputfile="foo.mdown", outputfile="bar.html")
 
-   # if also passing 'inputfile="underdir.mdown"' as custom arg
-   merged_underdir = Convertinator::output_path('underdir.mdown')
+   merged_underdir = Convertinator::output_path('foo.mdown')
    File.read(merged_underdir).must_equal merged_contents
    File.delete(merged_underdir)
 
-   converted_underdir = Convertinator::output_path('underdir.html')
+   converted_underdir = Convertinator::output_path('bar.html')
    File.file?(converted_underdir).must_equal true
    File.delete(converted_underdir)
   end
 
   it "converts specified file from Markdown to HTML" do
-   # Convertinator::convert_file('3-dir/1-file.mdown')
-
-   # converted_file = Convertinator::output_path('3-dir/1-file.html')
-   # File.file?(converted_file).must_equal true
-   # File.delete(converted_file)
+   Convertinator::convert_file('3-dir/1-file.mdown')
+   converted_file = Convertinator::output_path('1-file.html')
+   File.file?(converted_file).must_equal true
+   File.delete(converted_file)
   end
 end
