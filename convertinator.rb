@@ -118,7 +118,6 @@ module Convertinator
     end
   end
 
-  # TODO: output final file at top-level directory only
   def self.convert_dir(startdir, inputfile="merged.mdown", outputfile="file.html")
     input_path = output_path(inputfile)
     merge_markdown(startdir, inputfile)
@@ -127,21 +126,22 @@ module Convertinator
     to_html(input_path, outputpath)
   end
 
-  def self.to_html(input_path, path)
-    html = RENDERER.render(File.read(input_path))
-    File.open(path, 'w') do |f|
+  # TODO: save to output dir
+  def self.convert_file(inputfile)
+    # set name of outputfile to name of inputfile
+    markdown = File.basename inputfile
+    filename = markdown.split('.')[0]
+    outputpath = File.join(Dir.pwd, "#{filename}.html")
+    to_html(inputfile, outputpath)
+  end
+
+  def self.to_html(inputfile, outputpath)
+    html = RENDERER.render(File.read(inputfile))
+    File.open(outputpath, 'w') do |f|
       f.write(File.read(buildfile_path('header.html')))
       f.write html
       f.write(File.read(buildfile_path('footer.html')))
     end
-  end
-
-  def self.convert_file(inputfile)
-   # set name of outputfile to name of inputfile
-   markdown = File.basename inputfile
-   filename = markdown.split('.')[0]
-   outputpath = File.join(Dir.pwd, "#{filename}.html")
-   to_html(inputfile, outputpath)
   end
 end
 
@@ -185,14 +185,24 @@ Contents of file four.
     File.file?(html).must_equal true
   end
 
-  it "converts Markdown to HTML from specified directory" do
-   # Convertinator::convert_dir('underdir')
-   # File.read(merged).must_equal merged_contents
-   # File.file?('file.html').must_equal true
+  it "converts Markdown to HTML using custom params for source directory and filenames" do
+   Convertinator::convert_dir('underdir', inputfile="underdir.mdown", outputfile="underdir.html")
+
+   # if also passing 'inputfile="underdir.mdown"' as custom arg
+   merged_underdir = Convertinator::output_path('underdir.mdown')
+   File.read(merged_underdir).must_equal merged_contents
+   File.delete(merged_underdir)
+
+   converted_underdir = Convertinator::output_path('underdir.html')
+   File.file?(converted_underdir).must_equal true
+   File.delete(converted_underdir)
   end
 
   it "converts specified file from Markdown to HTML" do
    # Convertinator::convert_file('3-dir/1-file.mdown')
-   # File.file?('1-file.html').must_equal true
+
+   # converted_file = Convertinator::output_path('3-dir/1-file.html')
+   # File.file?(converted_file).must_equal true
+   # File.delete(converted_file)
   end
 end
