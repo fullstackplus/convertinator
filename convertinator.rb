@@ -1,65 +1,20 @@
 require 'redcarpet'
 require 'pry'
 
-# import renderer object
+# imports Redcarpet functionality as object
 RENDERER = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true)
+
+# output directory is a 'sensible default' but can  be overrriden here:
 OUTPUTDIR = '/build'
 
-# Usage:
-# markdown = File.read file
-# html = RENDERER.render markdown
-
-# See Desktop/es/workshops/IL/EN/html_renderer.rb for details.
-
-# API:
-# Convertinator::traverse_and_print('.')
-# Convertinator::merge_markdown('.')
-# Convertinator::to_html('.')
 module Convertinator
-
-  def self.buildfile_path(filename)
-   File.join(Dir.pwd, OUTPUTDIR, 'lib', filename)
-  end
 
   def self.output_path(filename)
    File.join(Dir.pwd, OUTPUTDIR, filename)
   end
 
-  # (str, str) ->
-  def self.traverse_and_print(startdir, indent='')
-    Dir.foreach(startdir) do |filename|
-      path = File.join(startdir, filename)
-
-      if filename == "." or filename == ".."
-        next
-
-      elsif File.file?(path)
-        puts [indent, filename].join
-        next
-
-      else File.directory?(path)
-        puts [indent, path, "/"].join
-        traverse_and_print(path, [indent, '    '].join)
-      end
-    end
-  end
-
-  # Desired API:
-  #
-  # def merge_markdown(startdir, output)
-  #   self.create_file(startdir, output)
-  #   self.traverse_and_merge(startdir, args, output)
-  # end
-  #
-  # Calling:
-  #
-  # Convertinator::merge_markdown('.', outupt = "merged.mdown")
-  #
-  # The point is to move the file creation out of the concatenate() method.
-  def self.merge_markdown(startdir, outputfile="merged.mdown")
-    outputpath = output_path(outputfile)
-    self.create_file(outputpath)
-    self.traverse_and_merge(startdir, outputpath)
+  def self.buildfile_path(filename)
+   File.join(Dir.pwd, OUTPUTDIR, 'lib', filename)
   end
 
   # (str) -> nil
@@ -83,16 +38,36 @@ module Convertinator
     File.extname(path).downcase.eql?('.mdown')
   end
 
-  # if content?
-  #   if file?
-  #     if markdown?
-  #       merge with output file
-  #   else if directory?
-  #     recur
+  # Prototype method for traverse_and_merge. Prints only.
+  #
+  # (str, str) ->
+  def self.traverse_and_print(startdir, indent='')
+    Dir.foreach(startdir) do |filename|
+      path = File.join(startdir, filename)
+
+      if filename == "." or filename == ".."
+        next
+
+      elsif File.file?(path)
+        puts [indent, filename].join
+        next
+
+      else File.directory?(path)
+        puts [indent, path, "/"].join
+        traverse_and_print(path, [indent, '    '].join)
+      end
+    end
+  end
+
+  # Performs a depth-first traversal of the directory tree
+  # starting with the specified @startdir, merging .mdown
+  # files along the way into @outputpath.
+  #
+  # @indent: for pretty printing the directory tree
+  # @depth : for debugging
   #
   # (str, file, depth) -> nil
   def self.traverse_and_merge(startdir, outputpath, indent="", depth=1)
-
     Dir.foreach(startdir) do |filename|
       path = File.join(startdir, filename)
 
@@ -102,13 +77,11 @@ module Convertinator
       elsif content? path
         if markdown? path
             puts [indent, filename].join
-
             File.open(outputpath, "a") do |f|
               f.write File.read path
               f.write "\n"
             end
           next
-
         else File.directory?(path)
           puts [indent, path, "/"].join
           traverse_and_merge(path, outputpath, [indent, '    '].join, depth.next)
@@ -116,6 +89,12 @@ module Convertinator
       end
 
     end
+  end
+
+  def self.merge_markdown(startdir, outputfile="merged.mdown")
+    outputpath = output_path(outputfile)
+    self.create_file(outputpath)
+    self.traverse_and_merge(startdir, outputpath)
   end
 
   def self.convert_dir(startdir, inputfile="merged.mdown", outputfile="file.html")
