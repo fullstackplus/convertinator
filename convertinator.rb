@@ -186,13 +186,13 @@ Contents of file four.
   it "converts Markdown to HTML using custom params for source directory and filenames" do
    Convertinator::convert_dir('underdir', inputfile="foo.mdown", outputfile="bar.html")
 
-   merged_underdir = Convertinator::output_path('foo.mdown')
-   File.read(merged_underdir).must_equal merged_contents
-   File.delete(merged_underdir)
+   merged = Convertinator::output_path('foo.mdown')
+   File.read(merged).must_equal merged_contents
+   File.delete(merged)
 
-   converted_underdir = Convertinator::output_path('bar.html')
-   File.file?(converted_underdir).must_equal true
-   File.delete(converted_underdir)
+   converted = Convertinator::output_path('bar.html')
+   File.file?(converted).must_equal true
+   File.delete(converted)
   end
 
   it "converts specified file from Markdown to HTML" do
