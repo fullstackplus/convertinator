@@ -28,17 +28,16 @@ Contents of file three.
 
 Contents of file four.
 
-                       EOT
+EOT
 
 
-  Convertinator.traverse_and_print 'underdir'
-
+  # Convertinator.traverse_and_print 'underdir'
   # Convertinator.visit 'underdir'
 
-  # it "merges markdown files across nested directories" do
-  #  Convertinator::merge_markdown('.')
-  #  _(File.read(markdown)).must_equal merged_contents
-  # end
+  it "merges markdown files across nested directories" do
+   Convertinator::merge_markdown('.')
+   _(File.read(markdown)).must_equal merged_contents
+  end
 
   # it "converts Markdown to HTML from default directory (root)" do
   #   Convertinator::convert_dir('.')

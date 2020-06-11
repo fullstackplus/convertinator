@@ -77,27 +77,27 @@ module Convertinator
   #
   # (str, file, depth) -> nil
   def traverse_and_merge(startdir, outputpath, indent="", depth=1)
-    Dir.foreach(startdir) do |filename|
-      path = File.join(startdir, filename)
+    puts "DEPTH: "+depth.to_s
+    entries = Dir.entries(startdir).select { |e| content? e }.sort
+    entries.each do |filename|
 
-      if filename == "." or filename == ".."
+      if markdown? filename
+          # binding.pry
+          # prints the right dir and file; visits all tree nodes correctly
+          puts [indent, filename].join
+          File.open(outputpath, "a") do |f|
+            # reads the top-level file with that filename:
+            # not concatenated with current directory path
+            f.write File.read filename
+            f.write "\n"
+          end
         next
-
-      elsif content? path
-        if markdown? path
-            puts [indent, filename].join
-            File.open(outputpath, "a") do |f|
-              f.write File.read path
-              f.write "\n"
-            end
-          next
-        else File.directory?(path)
-          puts [indent, path, "/"].join
-          traverse_and_merge(path, outputpath, [indent, '    '].join, depth.next)
+        elsif File.directory?(filename)
+          puts [indent, filename, "/"].join
+          traverse_and_merge(filename, outputpath, [indent, '    '].join, depth.next)
         end
-      end
 
-    end
+      end
   end
 
   def merge_markdown(startdir, outputfile="merged.mdown")
