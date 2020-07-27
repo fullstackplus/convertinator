@@ -42,31 +42,26 @@ module Convertinator
   # Prototype method for traverse_and_merge. Prints only.
   #
   # (str, str) ->
-  def traverse_and_print(startdir, indent='')
+  def traverse_and_print(startdir, dirs=[], indent='')
+    dirs << startdir if dirs.empty?
     entries = Dir.entries(startdir).sort
-    entries.each do |filename|
-      next if filename == "." or filename == ".."
+    gizzez = entries.reject { |e| e == "." or e == ".." }
 
+    gizzez.each do |filename|
       if File.file?(filename)
-        puts [indent, filename].join
+        # puts [indent, filename].join
+        path = [Dir.getwd, dirs, filename].join '/'
+        puts path
         next
 
-      else File.directory?(filename)
-        puts [indent, filename, "/"].join
-        traverse_and_print(filename, [indent, '    '].join)
+      elsif File.directory?(filename)
+        # puts [indent, filename, "/"].join
+        dirs << filename
+        traverse_and_print(filename, dirs, [indent, '    '].join)
+        dirs = dirs.slice(0.. -2)
       end
     end
   end
-
-
-  def visit(startdir, indent='')
-     puts Dir.entries(startdir).sort
-     puts "HA"
-     puts Dir.glob("*.mdown").sort
-     puts "HAHA"
-     puts Dir.glob("underdir").sort
-  end
-
 
   # Performs a depth-first traversal of the directory tree
   # starting with the specified @startdir, merging .mdown
@@ -76,28 +71,37 @@ module Convertinator
   # @depth : for debugging
   #
   # (str, file, depth) -> nil
-  def traverse_and_merge(startdir, outputpath, indent="", depth=1)
-    puts "DEPTH: "+depth.to_s
-    entries = Dir.entries(startdir).select { |e| content? e }.sort
-    entries.each do |filename|
+  def traverse_and_merge(startdir, outputpath, dirs=[], indent="")
+    # dirs << startdir if dirs.empty?
+    entries = Dir.entries(startdir).sort
+    gizzez = entries.reject { |e| e == "." or e == ".." }
 
+    # binding.pry
+
+    gizzez.each do |filename|
       if markdown? filename
-          # binding.pry
-          # prints the right dir and file; visits all tree nodes correctly
-          puts [indent, filename].join
-          File.open(outputpath, "a") do |f|
-            # reads the top-level file with that filename:
-            # not concatenated with current directory path
-            f.write File.read filename
-            f.write "\n"
-          end
-        next
-        elsif File.directory?(filename)
-          puts [indent, filename, "/"].join
-          traverse_and_merge(filename, outputpath, [indent, '    '].join, depth.next)
+        if dirs.empty?
+          path = [Dir.getwd, filename].join '/'
+        else
+          path = [Dir.getwd, dirs, filename].join '/'
         end
 
+        # puts [indent, filename].join
+        puts [indent, path].join
+
+        File.open(outputpath, "a") do |f|
+          f.write File.read path
+          f.write "\n"
+        end
+        next
+
+      elsif File.directory?(filename)
+        # puts [indent, filename, "/"].join
+        dirs << filename
+        traverse_and_merge(filename, outputpath, dirs, [indent, '    '].join)
+        dirs = dirs.slice(0.. -2)
       end
+    end
   end
 
   def merge_markdown(startdir, outputfile="merged.mdown")
@@ -130,3 +134,16 @@ module Convertinator
     end
   end
 end
+
+# puts arr
+# puts also
+# puts "WD: "               +Dir.getwd
+# puts [indent, filename].join
+# puts "EXPANDED filename: " +File.expand_path(filename)
+# # puts "EXPANDED __FILE__: " +File.expand_path(__FILE__)
+# puts "DIRNAME: "           +File.dirname(filename)
+# puts "BASENAME: "          +File.basename(filename)
+# puts "PWD: "               +Dir.pwd
+
+# puts "JOINED: "            +[startdir, '/', filename].join
+# puts
