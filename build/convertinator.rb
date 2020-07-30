@@ -5,7 +5,7 @@ require 'pry'
 RENDERER = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true)
 
 # output directory is a 'sensible default' but can  be overrriden here:
-OUTPUTDIR = '/build'
+OUTPUTDIR = ''
 
 module Convertinator
   extend self
@@ -33,9 +33,10 @@ module Convertinator
     File.basename(path).match /^[0-9]+\-{1}\w/
   end
 
+  # THIS WORX
   # (str) -> bool
   def markdown?(path)
-    File.file?(path) &&
+    # File.file?(path) &&
     File.extname(path).downcase.eql?('.mdown')
   end
 
@@ -45,9 +46,9 @@ module Convertinator
   def traverse_and_print(startdir, dirs=[], indent='')
     dirs << startdir if dirs.empty?
     entries = Dir.entries(startdir).sort
-    gizzez = entries.reject { |e| e == "." or e == ".." }
+    content = entries.reject { |e| e == "." or e == ".." }
 
-    gizzez.each do |filename|
+    content.each do |filename|
       if File.file?(filename)
         # puts [indent, filename].join
         path = [Dir.getwd, dirs, filename].join '/'
@@ -74,19 +75,25 @@ module Convertinator
   def traverse_and_merge(startdir, outputpath, dirs=[], indent="")
     # dirs << startdir if dirs.empty?
     entries = Dir.entries(startdir).sort
-    gizzez = entries.reject { |e| e == "." or e == ".." }
+    content = entries.select { |e| content? e }
 
-    # binding.pry
+    # FIXME: Dir.getwd includes current dir (/build) in paths
+    paths = content.map { |c| [Dir.getwd, c].join '/' }
 
-    gizzez.each do |filename|
+    binding.pry
+
+    paths.each do |filename|
       if markdown? filename
+        puts [indent, filename].join
+
         if dirs.empty?
+          # FIXME: Dir.getwd includes current dir (/build) in paths
           path = [Dir.getwd, filename].join '/'
         else
           path = [Dir.getwd, dirs, filename].join '/'
         end
 
-        # puts [indent, filename].join
+        puts [indent, filename].join
         puts [indent, path].join
 
         File.open(outputpath, "a") do |f|
@@ -110,7 +117,7 @@ module Convertinator
     traverse_and_merge(startdir, outputpath)
   end
 
-  def convert_dir(startdir, inputfile="merged.mdown", outputfile="file.html")
+  def convert_dir(startdir, inputfile="merged.mdown", outputfile="merged.html")
     merge_markdown(startdir, inputfile)
     input  = output_path(inputfile)
     output = output_path(outputfile)
@@ -134,6 +141,9 @@ module Convertinator
     end
   end
 end
+
+
+
 
 # puts arr
 # puts also
