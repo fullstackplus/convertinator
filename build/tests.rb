@@ -31,7 +31,9 @@ Contents of file four.
 EOT
 
 
-  Convertinator.traverse_and_print 'underdir'
+  dir = File.expand_path("..", Dir.pwd)
+  Convertinator.traverse_and_print dir
+
   # Convertinator.traverse_and_merge 'underdir'
 
   # Convertinator.visit 'underdir'

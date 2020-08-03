@@ -1,8 +1,11 @@
 require 'redcarpet'
+require 'pathname'
 require 'pry'
 
 # imports Redcarpet functionality as object
 RENDERER = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true)
+
+STARTDIR = File.expand_path("..", Dir.pwd)
 
 # output directory is a 'sensible default' but can  be overrriden here:
 OUTPUTDIR = ''
@@ -43,23 +46,49 @@ module Convertinator
   # Prototype method for traverse_and_merge. Prints only.
   #
   # (str, str) ->
-  def traverse_and_print(startdir, dirs=[], indent='')
-    dirs << startdir if dirs.empty?
-    entries = Dir.entries(startdir).sort
-    content = entries.reject { |e| e == "." or e == ".." }
+  # def traverse_and_print(startdir, dirs=[], indent='')
+  #   entries = Dir.entries(startdir).sort
+  #   content = entries.select { |e| content? e }
+  #   paths = content.map { |c| [STARTDIR, c].join '/' }
+  #   pathnames = paths.map { |p| Pathname.new p  }
+  #   # binding.pry
+  #   pathnames.each do |p|
+  #     if p.file?
+  #       if dirs.empty?
+  #         puts indent + p.to_s
+  #       else
+  #         file = p.split[1].to_s
+  #         puts [indent + STARTDIR, dirs, file].join '/'
+  #       end
+  #     next
 
-    content.each do |filename|
-      if File.file?(filename)
-        # puts [indent, filename].join
-        path = [Dir.getwd, dirs, filename].join '/'
-        puts path
-        next
+  #     else
+  #       # Use the API:
+  #       # https://ruby-doc.org/stdlib-2.7.1/libdoc/pathname/rdoc/Pathname.html#method-i-to_s
+  #       # puts "INSIDE SUBDIR: "+ p.to_s
+  #       puts "CHILDREN: "+ p.children.to_s
+  #       puts "DIRNAME: "+ p.split[1].to_s
 
-      elsif File.directory?(filename)
-        # puts [indent, filename, "/"].join
-        dirs << filename
-        traverse_and_print(filename, dirs, [indent, '    '].join)
-        dirs = dirs.slice(0.. -2)
+  #       dirs << dirname = p.split[1].to_s
+  #       traverse_and_print(p, dirs, [indent, '    '].join)
+  #       dirs = dirs.slice(0.. -2)
+  #     end
+  #   end
+  # end
+
+
+  # FUCKING FINALLY, DUDE.
+  def traverse_and_print(startdir, indent='')
+    dir = Pathname.new startdir
+    children = dir.children.sort
+    content = children.select { |e| content? e }
+    content.each do |c|
+      if c.file?
+        puts indent+c.to_s
+      next
+      else
+        puts indent+c.to_s
+        traverse_and_print(c.to_s, [indent, '    '].join)
       end
     end
   end
@@ -73,39 +102,38 @@ module Convertinator
   #
   # (str, file, depth) -> nil
   def traverse_and_merge(startdir, outputpath, dirs=[], indent="")
-    # dirs << startdir if dirs.empty?
     entries = Dir.entries(startdir).sort
     content = entries.select { |e| content? e }
-
-    # FIXME: Dir.getwd includes current dir (/build) in paths
-    paths = content.map { |c| [Dir.getwd, c].join '/' }
+    paths = content.map { |c| [STARTDIR, c].join '/' }
+    pathnames = paths.map { |p| Pathname.new p  }
 
     binding.pry
 
-    paths.each do |filename|
-      if markdown? filename
-        puts [indent, filename].join
+    pathnames.each do |p|
+      if p.file?
 
-        if dirs.empty?
-          # FIXME: Dir.getwd includes current dir (/build) in paths
-          path = [Dir.getwd, filename].join '/'
-        else
-          path = [Dir.getwd, dirs, filename].join '/'
-        end
+        # if dirs.empty?
+        #   path = p.to_s
+        # else
+        #   path = [p.to_s, dirs].join '/'
+        # end
 
-        puts [indent, filename].join
-        puts [indent, path].join
+        puts "FILE: "+ p.to_s
 
         File.open(outputpath, "a") do |f|
-          f.write File.read path
+          f.write File.read p.to_s
           f.write "\n"
         end
         next
 
-      elsif File.directory?(filename)
-        # puts [indent, filename, "/"].join
-        dirs << filename
-        traverse_and_merge(filename, outputpath, dirs, [indent, '    '].join)
+      else
+        # Use the API:
+        # https://ruby-doc.org/stdlib-2.7.1/libdoc/pathname/rdoc/Pathname.html#method-i-to_s
+        puts "INSIDE SUBDIR: "+ p.to_s
+        puts "CHILDREN: "+ p.children.to_s
+        puts "DIRNAME: "+ p.split[1].to_s
+        dirs << p.split[1].to_s
+        traverse_and_merge(p, outputpath, dirs, [indent, '    '].join)
         dirs = dirs.slice(0.. -2)
       end
     end
