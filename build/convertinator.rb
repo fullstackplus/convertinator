@@ -36,47 +36,6 @@ module Convertinator
     File.basename(path).match /^[0-9]+\-{1}\w/
   end
 
-  # THIS WORX
-  # (str) -> bool
-  def markdown?(path)
-    # File.file?(path) &&
-    File.extname(path).downcase.eql?('.mdown')
-  end
-
-  # Prototype method for traverse_and_merge. Prints only.
-  #
-  # (str, str) ->
-  # def traverse_and_print(startdir, dirs=[], indent='')
-  #   entries = Dir.entries(startdir).sort
-  #   content = entries.select { |e| content? e }
-  #   paths = content.map { |c| [STARTDIR, c].join '/' }
-  #   pathnames = paths.map { |p| Pathname.new p  }
-  #   # binding.pry
-  #   pathnames.each do |p|
-  #     if p.file?
-  #       if dirs.empty?
-  #         puts indent + p.to_s
-  #       else
-  #         file = p.split[1].to_s
-  #         puts [indent + STARTDIR, dirs, file].join '/'
-  #       end
-  #     next
-
-  #     else
-  #       # Use the API:
-  #       # https://ruby-doc.org/stdlib-2.7.1/libdoc/pathname/rdoc/Pathname.html#method-i-to_s
-  #       # puts "INSIDE SUBDIR: "+ p.to_s
-  #       puts "CHILDREN: "+ p.children.to_s
-  #       puts "DIRNAME: "+ p.split[1].to_s
-
-  #       dirs << dirname = p.split[1].to_s
-  #       traverse_and_print(p, dirs, [indent, '    '].join)
-  #       dirs = dirs.slice(0.. -2)
-  #     end
-  #   end
-  # end
-
-
   # FUCKING FINALLY, DUDE.
   def traverse_and_print(startdir, indent='')
     dir = Pathname.new startdir
@@ -101,40 +60,22 @@ module Convertinator
   # @depth : for debugging
   #
   # (str, file, depth) -> nil
-  def traverse_and_merge(startdir, outputpath, dirs=[], indent="")
-    entries = Dir.entries(startdir).sort
-    content = entries.select { |e| content? e }
-    paths = content.map { |c| [STARTDIR, c].join '/' }
-    pathnames = paths.map { |p| Pathname.new p  }
-
-    binding.pry
-
-    pathnames.each do |p|
-      if p.file?
-
-        # if dirs.empty?
-        #   path = p.to_s
-        # else
-        #   path = [p.to_s, dirs].join '/'
-        # end
-
-        puts "FILE: "+ p.to_s
+  def traverse_and_merge(startdir, outputpath, indent='')
+    children = Pathname.new(startdir).children.sort
+    content = children.select { |e| content? e }
+    content.each do |c|
+      if c.file?
+        puts indent+c.to_s
 
         File.open(outputpath, "a") do |f|
-          f.write File.read p.to_s
+          f.write File.read c.to_s
           f.write "\n"
         end
-        next
 
+      next
       else
-        # Use the API:
-        # https://ruby-doc.org/stdlib-2.7.1/libdoc/pathname/rdoc/Pathname.html#method-i-to_s
-        puts "INSIDE SUBDIR: "+ p.to_s
-        puts "CHILDREN: "+ p.children.to_s
-        puts "DIRNAME: "+ p.split[1].to_s
-        dirs << p.split[1].to_s
-        traverse_and_merge(p, outputpath, dirs, [indent, '    '].join)
-        dirs = dirs.slice(0.. -2)
+        puts indent+c.to_s
+        traverse_and_merge(c.to_s, outputpath, [indent, '    '].join)
       end
     end
   end
