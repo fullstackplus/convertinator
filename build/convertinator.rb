@@ -36,7 +36,7 @@ module Convertinator
     File.basename(path).match /^[0-9]+\-{1}\w/
   end
 
-  # FUCKING FINALLY, DUDE.
+  # Protoptype method. Traverses and prints only.
   def traverse_and_print(startdir, indent='')
     dir = Pathname.new startdir
     children = dir.children.sort
@@ -52,6 +52,14 @@ module Convertinator
     end
   end
 
+  def id(content)
+    if content.respond_to? 'split'
+      (content.split[1].to_s.split('-').first).to_i
+    else
+      (content.first.split[1].to_s.split('-').first).to_i
+    end
+  end
+
   # Performs a depth-first traversal of the directory tree
   # starting with the specified @startdir, merging .mdown
   # files along the way into @outputpath.
@@ -60,10 +68,11 @@ module Convertinator
   # @depth : for debugging
   #
   # (str, file, depth) -> nil
-  def traverse_and_merge(startdir, outputpath, indent='')
+  def traverse_and_merge(startdir, outputpath, indent='', ids=[])
     children = Pathname.new(startdir).children.sort
     content = children.select { |e| content? e }
     content.each do |c|
+      ids << id(c)
       if c.file?
         puts indent+c.to_s
 
@@ -75,9 +84,10 @@ module Convertinator
       next
       else
         puts indent+c.to_s
-        traverse_and_merge(c.to_s, outputpath, [indent, '    '].join)
+        traverse_and_merge(c.to_s, outputpath, [indent, '    '].join, ids)
       end
     end
+    ids
   end
 
   def merge_markdown(startdir, outputfile="merged.mdown")
@@ -111,18 +121,3 @@ module Convertinator
   end
 end
 
-
-
-
-# puts arr
-# puts also
-# puts "WD: "               +Dir.getwd
-# puts [indent, filename].join
-# puts "EXPANDED filename: " +File.expand_path(filename)
-# # puts "EXPANDED __FILE__: " +File.expand_path(__FILE__)
-# puts "DIRNAME: "           +File.dirname(filename)
-# puts "BASENAME: "          +File.basename(filename)
-# puts "PWD: "               +Dir.pwd
-
-# puts "JOINED: "            +[startdir, '/', filename].join
-# puts

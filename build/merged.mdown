@@ -10,9 +10,15 @@ Contents of file two.
 
 Contents of file three.
 
-<!-- Try renaming me to 1-file-x.mdown -->
-
 #FILE 4
 
 Contents of file four.
+
+#FILE 5
+
+Contents of file five.
+
+#FILE 6
+
+Contents of file six.
 

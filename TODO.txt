@@ -1,5 +1,6 @@
 #TODO
 Read up on passing args to command line scripts. 
+FIX: <!-- Try renaming me to 1-file-x.mdown -->
 
 #DONE
 0. Traverse all dirs recursively from root, printing their names 

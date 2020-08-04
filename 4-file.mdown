@@ -1,3 +1,3 @@
-#FILE 4
+#FILE 6
 
-Contents of file four.
+Contents of file six.
