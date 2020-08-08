@@ -75,13 +75,12 @@ module Convertinator
       ids << id(c)
       if c.file?
         puts indent+c.to_s
-
         File.open(outputpath, "a") do |f|
           f.write File.read c.to_s
           f.write "\n"
         end
-
       next
+
       else
         puts indent+c.to_s
         traverse_and_merge(c.to_s, outputpath, [indent, '    '].join, ids)
@@ -100,9 +99,10 @@ module Convertinator
     merge_markdown(startdir, inputfile)
     input  = output_path(inputfile)
     output = output_path(outputfile)
-    to_html(input, output)
+    to_pdf(input, output)
   end
 
+  # TODO: ALSO AS PDF
   def convert_file(inputfile)
     markdown = File.basename inputfile
     filename = markdown.split('.')[0]
@@ -118,6 +118,12 @@ module Convertinator
       f.write html
       f.write(File.read(buildfile_path('footer.html')))
     end
+  end
+
+  # TODO: TESTME
+  def to_pdf(inputfile, outputpath)
+    to_html(inputfile, outputpath)
+    system("pandoc --pdf-engine=prince --css=lib/css/print.css #{outputpath} -o merged.pdf")
   end
 end
 

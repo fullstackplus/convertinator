@@ -42,7 +42,7 @@ EOT
   dir = File.expand_path("..", Dir.pwd)
   Convertinator.traverse_and_print dir
 
-  it "return a nested list of files and directories" do
+  it "returns a nested list of files and directories" do
    _(Convertinator::traverse_and_merge(dir, markdown))
    .must_equal [1, 2, 3, 1, 4, 1, 2, 4]
    # .must_equal [1, 2, [3, [1], [4, [1, 2]], 4]]

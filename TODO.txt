@@ -1,6 +1,10 @@
 #TODO
-Read up on passing args to command line scripts. 
-FIX: <!-- Try renaming me to 1-file-x.mdown -->
+
+1. Tests for PDF generation
+2. Converting single files to PDF
+3. Better API
+4. I can pass args to Convertinator on the command line?
+5. Convertinator as a gem.
 
 #DONE
 0. Traverse all dirs recursively from root, printing their names 
@@ -9,3 +13,7 @@ FIX: <!-- Try renaming me to 1-file-x.mdown -->
 3. I can pass a directory (one or more levels deeper than the current one) as an argument
 4. I can pass an individual file (again, any level deep) as an argument
 5. The script constructs the final .html file completely, with header (<head></head> etc) and footer.
+6. PDF generation with Prince and Pandoc.
+7. Tests for files with composite names pass.
+8. Add print / pdf stylesheets to Convertinator build (for PDF docs).
+9. Issuing shell commands from Ruby (Ruby runs Pandoc), one single pipeline out of multiple steps
