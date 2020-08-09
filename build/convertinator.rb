@@ -13,6 +13,12 @@ OUTPUTDIR = ''
 module Convertinator
   extend self
 
+  def fileformat(name)
+    basename = Pathname.new(STARTDIR).basename.to_s
+    File.join(Dir.pwd, "#{basename}.#{name}")
+  end
+
+  # DEPRECATE ME
   def output_path(filename)
    File.join(Dir.pwd, OUTPUTDIR, filename)
   end
@@ -21,7 +27,7 @@ module Convertinator
    File.join(Dir.pwd, OUTPUTDIR, 'lib', filename)
   end
 
-  # (str) -> nil
+  # DEPRECATED
   def create_file(outputpath)
     unless File.file? outputpath
       File.open(outputpath, 'w') { |f| f.write '' }
@@ -89,31 +95,30 @@ module Convertinator
     ids
   end
 
-  def merge_markdown(startdir, outputfile="merged.mdown")
-    outputpath = output_path(outputfile)
-    create_file(outputpath)
-    traverse_and_merge(startdir, outputpath)
+  # TODO: make functional; return path
+  def merge_markdown(startdir)
+    markdown = fileformat('mdown')
+    traverse_and_merge(startdir, markdown)
   end
 
-  def convert_dir(startdir, inputfile="merged.mdown", outputfile="merged.html")
-    merge_markdown(startdir, inputfile)
-    input  = output_path(inputfile)
-    output = output_path(outputfile)
-    to_pdf(input, output)
+  def convert_dir(startdir)
+    merge_markdown(startdir)
+    markdown = fileformat('mdown')
+    to_pdf(markdown)
   end
 
   # TODO: ALSO AS PDF
   def convert_file(inputfile)
     markdown = File.basename inputfile
     filename = markdown.split('.')[0]
-    # set name of outputfile to that of inputfile:
-    output = output_path("#{filename}.html")
-    to_html(inputfile, output)
+    to_pdf(markdown)
   end
 
-  def to_html(inputfile, outputpath)
-    html = RENDERER.render(File.read(inputfile))
-    File.open(outputpath, 'w') do |f|
+  def to_html(markdown)
+    html = RENDERER.render(File.read(markdown))
+    file = fileformat('html')
+
+    File.open(file, 'w') do |f|
       f.write(File.read(buildfile_path('header.html')))
       f.write html
       f.write(File.read(buildfile_path('footer.html')))
@@ -121,9 +126,11 @@ module Convertinator
   end
 
   # TODO: TESTME
-  def to_pdf(inputfile, outputpath)
-    to_html(inputfile, outputpath)
-    system("pandoc --pdf-engine=prince --css=lib/css/print.css #{outputpath} -o merged.pdf")
+  def to_pdf(markdown)
+    to_html(markdown)
+    html = fileformat('html')
+    pdf = fileformat('pdf')
+    system("pandoc --pdf-engine=prince --css=lib/css/print.css #{html} -o #{pdf}")
   end
 end
 

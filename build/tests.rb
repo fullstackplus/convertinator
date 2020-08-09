@@ -3,12 +3,16 @@ require 'minitest/autorun'
 require_relative 'convertinator'
 
 describe "tests for merging markdown files and converting them into HTML" do
-  markdown = Convertinator::output_path('merged.mdown')
-  html     = Convertinator::output_path('merged.html')
+
+  # TODO: USE fileformat()
+  markdown = Convertinator::output_path('convertinator.mdown')
+  html     = Convertinator::output_path('convertinator.html')
+  pdf      = Convertinator::output_path('convertinator.pdf')
 
   before do
     File.delete(markdown) if File.exist?(markdown)
     File.delete(html) if File.exist?(html)
+    File.delete(pdf) if File.exist?(pdf)
   end
 
   merged_contents = <<-EOT
@@ -53,27 +57,23 @@ EOT
    _(File.read(markdown)).must_equal merged_contents
   end
 
-  it "converts Markdown to HTML from default directory (root)" do
+  # it "converts one specified file to HTML and PDF" do
+  #  Convertinator::convert_file('../3-dir/1-file.mdown')
+  #  htmlfile = Convertinator::output_path('1-file.html')
+  #  pdffile  = Convertinator::output_path('1-file.pdf')
+
+  #  _(File.file?(htmlfile)).must_equal true
+  #  _(File.file?(pdffile)).must_equal true
+
+  #  # File.delete(htmlfile)
+  #  # File.delete(pdffile)
+  # end
+
+  it "converts the entire document to HTML and PDF from default directory (root)" do
     Convertinator::convert_dir('..')
+
+    _(File.file?(markdown)).must_equal true
     _(File.file?(html)).must_equal true
-  end
-
-  it "converts Markdown to HTML using custom params for source directory and filenames" do
-   Convertinator::convert_dir('..', inputfile="foo.mdown", outputfile="bar.html")
-
-   merged = Convertinator::output_path('foo.mdown')
-   _(File.read(merged)).must_equal merged_contents
-   File.delete(merged)
-
-   converted = Convertinator::output_path('bar.html')
-   _(File.file?(converted)).must_equal true
-   File.delete(converted)
-  end
-
-  it "converts specified file from Markdown to HTML" do
-   Convertinator::convert_file('../3-dir/1-file.mdown')
-   converted = Convertinator::output_path('1-file.html')
-   _(File.file?(converted)).must_equal true
-   File.delete(converted)
+    _(File.file?(pdf)).must_equal true
   end
 end
