@@ -44,30 +44,26 @@ EOT
   dir = File.expand_path("..", Dir.pwd)
   Convertinator.traverse_and_print dir
 
-  it "returns a nested list of files and directories" do
+  it "returns a list of files and directories, in the order it visits them" do
    _(Convertinator::traverse_and_merge(dir, markdown))
    .must_equal [1, 2, 3, 1, 4, 1, 2, 4]
    # .must_equal [1, 2, [3, [1], [4, [1, 2]], 4]]
   end
 
-  it "merges markdown files across nested directories" do
+  it "merges Markdown files across nested directories" do
    Convertinator::merge_markdown('..')
    _(File.read(markdown)).must_equal merged_contents
   end
 
-  # it "converts one specified file to HTML and PDF" do
-  #  Convertinator::convert_file('../3-dir/1-file.mdown')
-  #  htmlfile = Convertinator::output_path('1-file.html')
-  #  pdffile  = Convertinator::output_path('1-file.pdf')
+  it "converts specified Markdown file to HTML and PDF" do
+   Convertinator::convert_file('3-dir/1-file.mdown')
 
-  #  _(File.file?(htmlfile)).must_equal true
-  #  _(File.file?(pdffile)).must_equal true
+   # MIND YOU: relative path, unlike convert_dir
+   _(File.file?('convertinator_3-dir/1-file.html')).must_equal true
+   _(File.file?('convertinator_3-dir/1-file.pdf')).must_equal true
+  end
 
-  #  # File.delete(htmlfile)
-  #  # File.delete(pdffile)
-  # end
-
-  it "converts the entire document to HTML and PDF from default directory (root)" do
+  it "converts the entire Markdown document to HTML and PDF from default directory (root)" do
     Convertinator::convert_dir('..')
 
     _(File.file?(markdown)).must_equal true
