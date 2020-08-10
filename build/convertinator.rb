@@ -95,16 +95,14 @@ module Convertinator
     ids
   end
 
-  # TODO: make functional; return path
   def merge_markdown(startdir)
     markdown = fileformat('mdown')
     traverse_and_merge(startdir, markdown)
+    markdown
   end
 
   def convert_dir(startdir)
-    merge_markdown(startdir)
-    markdown = fileformat('mdown')
-    to_pdf(markdown)
+    to_pdf(merge_markdown(startdir))
   end
 
   # TODO: ALSO AS PDF
@@ -123,13 +121,13 @@ module Convertinator
       f.write html
       f.write(File.read(buildfile_path('footer.html')))
     end
+    file
   end
 
   # TODO: TESTME
   def to_pdf(markdown)
-    to_html(markdown)
-    html = fileformat('html')
-    pdf = fileformat('pdf')
+    html = to_html(markdown)
+    pdf  = fileformat('pdf')
     system("pandoc --pdf-engine=prince --css=lib/css/print.css #{html} -o #{pdf}")
   end
 end

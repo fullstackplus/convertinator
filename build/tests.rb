@@ -3,11 +3,9 @@ require 'minitest/autorun'
 require_relative 'convertinator'
 
 describe "tests for merging markdown files and converting them into HTML" do
-
-  # TODO: USE fileformat()
-  markdown = Convertinator::output_path('convertinator.mdown')
-  html     = Convertinator::output_path('convertinator.html')
-  pdf      = Convertinator::output_path('convertinator.pdf')
+  markdown = Convertinator::fileformat('mdown')
+  html     = Convertinator::fileformat('html')
+  pdf      = Convertinator::fileformat('pdf')
 
   before do
     File.delete(markdown) if File.exist?(markdown)
