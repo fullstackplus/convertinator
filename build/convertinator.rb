@@ -18,9 +18,12 @@ module Convertinator
     File.join(Dir.pwd, "#{basename}.#{name}")
   end
 
-  # DEPRECATE ME
-  def output_path(filename)
-   File.join(Dir.pwd, OUTPUTDIR, filename)
+  def abspath(relpath)
+    # basename = Pathname.new(STARTDIR).basename.to_s
+    # filename = [basename, '_', relpath].join
+    # File.join(Dir.pwd, filename)
+
+    File.join(STARTDIR, relpath)
   end
 
   def buildfile_path(filename)
@@ -28,11 +31,16 @@ module Convertinator
   end
 
   # DEPRECATED
-  def create_file(outputpath)
-    unless File.file? outputpath
-      File.open(outputpath, 'w') { |f| f.write '' }
-    end
-  end
+  #
+  # def output_path(filename)
+  #  File.join(Dir.pwd, OUTPUTDIR, filename)
+  # end
+  #
+  # def create_file(outputpath)
+  #   unless File.file? outputpath
+  #     File.open(outputpath, 'w') { |f| f.write '' }
+  #   end
+  # end
 
   # Match at the start of the line: one or more digit,
   # followed by a single dash, followed by any text.
@@ -106,10 +114,11 @@ module Convertinator
   end
 
   # TODO: ALSO AS PDF
-  def convert_file(inputfile)
-    markdown = File.basename inputfile
-    filename = markdown.split('.')[0]
-    to_pdf(markdown)
+  def convert_file(relpath)
+    p = abspath(relpath)
+
+    # binding.pry
+    to_pdf(abspath(relpath))
   end
 
   def to_html(markdown)
@@ -124,7 +133,7 @@ module Convertinator
     file
   end
 
-  # TODO: TESTME
+  # TODO: PASS OUTPUT NAME AS OPTIONAL ARG
   def to_pdf(markdown)
     html = to_html(markdown)
     pdf  = fileformat('pdf')
