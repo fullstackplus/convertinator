@@ -19,11 +19,14 @@ module Convertinator
   end
 
   def abspath(relpath)
-    # basename = Pathname.new(STARTDIR).basename.to_s
-    # filename = [basename, '_', relpath].join
-    # File.join(Dir.pwd, filename)
-
     File.join(STARTDIR, relpath)
+  end
+
+  # TODO
+  def custom_path(filename, format)
+    sans_format = relpath.split('.').first
+    # => ["3-dir/1-file", "mdown"]
+    # etc
   end
 
   def buildfile_path(filename)
@@ -113,17 +116,28 @@ module Convertinator
     to_pdf(merge_markdown(startdir))
   end
 
-  # TODO: ALSO AS PDF
+  # TODO
   def convert_file(relpath)
+
+    # This returns the proper path to the .mdown input file:
     p = abspath(relpath)
 
     # binding.pry
-    to_pdf(abspath(relpath))
+
+    to_pdf p
+    # to_pdf(p, relpath)
   end
 
   def to_html(markdown)
     html = RENDERER.render(File.read(markdown))
     file = fileformat('html')
+
+    # def to_html(markdown, outputfile="")
+    #   file = if outputfile.empty?
+    #    fileformat('html')
+    #   else
+    #    custom_path(outputfile, 'html')
+    #   end
 
     File.open(file, 'w') do |f|
       f.write(File.read(buildfile_path('header.html')))
@@ -133,7 +147,7 @@ module Convertinator
     file
   end
 
-  # TODO: PASS OUTPUT NAME AS OPTIONAL ARG
+  # TODO: PASS OUTPUT NAME AS OPTIONAL ARG ?
   def to_pdf(markdown)
     html = to_html(markdown)
     pdf  = fileformat('pdf')
