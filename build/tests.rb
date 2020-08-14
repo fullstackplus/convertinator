@@ -3,14 +3,22 @@ require 'minitest/autorun'
 require_relative 'convertinator'
 
 describe "tests for merging markdown files and converting them into HTML" do
+  # entire document
   markdown = Convertinator::fileformat('mdown')
   html     = Convertinator::fileformat('html')
   pdf      = Convertinator::fileformat('pdf')
 
-  before do
-    File.delete(markdown) if File.exist?(markdown)
-    File.delete(html) if File.exist?(html)
-    File.delete(pdf) if File.exist?(pdf)
+  # a single file
+  html_file = 'convertinator_3-dir_1-file.html'
+  pdf_file  = 'convertinator_3-dir_1-file.pdf'
+
+  after do
+    File.delete(markdown) if File.exist? markdown
+    File.delete(html) if File.exist? html
+    File.delete(pdf) if File.exist? pdf
+
+    File.delete(html_file) if File.exist? html_file
+    File.delete(pdf_file) if File.exist? pdf_file
   end
 
   merged_contents = <<-EOT
@@ -58,8 +66,8 @@ EOT
   it "converts specified Markdown file to HTML and PDF" do
    Convertinator::convert_file('3-dir/1-file.mdown')
 
-   _(File.file?('convertinator_3-dir_1-file.html')).must_equal true
-   _(File.file?('convertinator_3-dir_1-file.pdf')).must_equal true
+   _(File.file?(html_file)).must_equal true
+   _(File.file?(pdf_file)).must_equal true
   end
 
   it "converts the entire Markdown document to HTML and PDF from default directory (root)" do
