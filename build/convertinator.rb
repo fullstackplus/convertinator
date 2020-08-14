@@ -13,27 +13,22 @@ OUTPUTDIR = ''
 module Convertinator
   extend self
 
+  def project_name
+    Pathname.new(STARTDIR).basename.to_s
+  end
+
   def fileformat(name)
-    basename = Pathname.new(STARTDIR).basename.to_s
-    File.join(Dir.pwd, "#{basename}.#{name}")
+    File.join(Dir.pwd, "#{project_name}.#{name}")
   end
 
   def abspath(relpath)
     File.join(STARTDIR, relpath)
   end
 
-  # TODO
   def path_to(filename, format)
-    # sans_format = relpath.split('.').first
-    # => ["3-dir/1-file", "mdown"]
-    # etc
-
-    # FAKE IT
-    if format.eql? 'html'
-      "/Users/vahagnhay/Desktop/convertinator/build/convertinator_3-dir_1-file.html"
-    else
-      "/Users/vahagnhay/Desktop/convertinator/build/convertinator_3-dir_1-file.pdf"
-    end
+    name_strings = filename.split('.')[0].split('/').join '_'
+    name_string = [project_name, name_strings].join '_'
+    File.join(Dir.pwd, "#{name_string}.#{format}")
   end
 
   def buildfile_path(filename)

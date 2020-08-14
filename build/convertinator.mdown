@@ -1,0 +1,24 @@
+#FILE 1
+
+Contents of file one.
+
+#FILE 2
+
+Contents of file two.
+
+#FILE 3
+
+Contents of file three.
+
+#FILE 4
+
+Contents of file four.
+
+#FILE 5
+
+Contents of file five.
+
+#FILE 6
+
+Contents of file six.
+
