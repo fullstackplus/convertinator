@@ -59,8 +59,8 @@ EOT
    Convertinator::convert_file('3-dir/1-file.mdown')
 
    # MIND YOU: relative path, unlike convert_dir
-   _(File.file?('convertinator_3-dir-1-file.html')).must_equal true
-   _(File.file?('convertinator_3-dir-1-file.pdf')).must_equal true
+   _(File.file?('convertinator_3-dir_1-file.html')).must_equal true
+   _(File.file?('convertinator_3-dir_1-file.pdf')).must_equal true
   end
 
   it "converts the entire Markdown document to HTML and PDF from default directory (root)" do

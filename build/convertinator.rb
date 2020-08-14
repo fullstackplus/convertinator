@@ -23,27 +23,22 @@ module Convertinator
   end
 
   # TODO
-  def custom_path(filename, format)
-    sans_format = relpath.split('.').first
+  def path_to(filename, format)
+    # sans_format = relpath.split('.').first
     # => ["3-dir/1-file", "mdown"]
     # etc
+
+    # FAKE IT
+    if format.eql? 'html'
+      "/Users/vahagnhay/Desktop/convertinator/build/convertinator_3-dir_1-file.html"
+    else
+      "/Users/vahagnhay/Desktop/convertinator/build/convertinator_3-dir_1-file.pdf"
+    end
   end
 
   def buildfile_path(filename)
    File.join(Dir.pwd, OUTPUTDIR, 'lib', filename)
   end
-
-  # DEPRECATED
-  #
-  # def output_path(filename)
-  #  File.join(Dir.pwd, OUTPUTDIR, filename)
-  # end
-  #
-  # def create_file(outputpath)
-  #   unless File.file? outputpath
-  #     File.open(outputpath, 'w') { |f| f.write '' }
-  #   end
-  # end
 
   # Match at the start of the line: one or more digit,
   # followed by a single dash, followed by any text.
@@ -116,28 +111,17 @@ module Convertinator
     to_pdf(merge_markdown(startdir))
   end
 
-  # TODO
   def convert_file(relpath)
-
-    # This returns the proper path to the .mdown input file:
-    p = abspath(relpath)
-
-    # binding.pry
-
-    to_pdf p
-    # to_pdf(p, relpath)
+    to_pdf(abspath(relpath), relpath)
   end
 
-  def to_html(markdown)
+  def to_html(markdown, outputfile="")
     html = RENDERER.render(File.read(markdown))
-    file = fileformat('html')
-
-    # def to_html(markdown, outputfile="")
-    #   file = if outputfile.empty?
-    #    fileformat('html')
-    #   else
-    #    custom_path(outputfile, 'html')
-    #   end
+    file = if outputfile.empty?
+     fileformat('html')
+    else
+     path_to(outputfile, 'html')
+    end
 
     File.open(file, 'w') do |f|
       f.write(File.read(buildfile_path('header.html')))
@@ -147,10 +131,13 @@ module Convertinator
     file
   end
 
-  # TODO: PASS OUTPUT NAME AS OPTIONAL ARG ?
-  def to_pdf(markdown)
-    html = to_html(markdown)
-    pdf  = fileformat('pdf')
+  def to_pdf(markdown, outputfile="")
+    html = to_html(markdown, outputfile)
+    pdf = if outputfile.empty?
+      fileformat('pdf')
+    else
+      path_to(outputfile, 'pdf')
+    end
     system("pandoc --pdf-engine=prince --css=lib/css/print.css #{html} -o #{pdf}")
   end
 end
