@@ -58,7 +58,6 @@ EOT
   it "converts specified Markdown file to HTML and PDF" do
    Convertinator::convert_file('3-dir/1-file.mdown')
 
-   # MIND YOU: relative path, unlike convert_dir
    _(File.file?('convertinator_3-dir_1-file.html')).must_equal true
    _(File.file?('convertinator_3-dir_1-file.pdf')).must_equal true
   end

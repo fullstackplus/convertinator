@@ -1,8 +1,5 @@
 #TODO
 
-1. Tests for PDF generation
-2. Converting single files to PDF
-3. Better API
 4. I can pass args to Convertinator on the command line?
 5. Convertinator as a gem.
 
@@ -17,3 +14,5 @@
 7. Tests for files with composite names pass.
 8. Add print / pdf stylesheets to Convertinator build (for PDF docs).
 9. Issuing shell commands from Ruby (Ruby runs Pandoc), one single pipeline out of multiple steps
+1. Tests for PDF generation
+2. Converting single files to PDF
