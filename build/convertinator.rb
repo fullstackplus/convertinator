@@ -133,7 +133,7 @@ module Convertinator
     else
       path_to(outputfile, 'pdf')
     end
-    system("pandoc --pdf-engine=prince --css=lib/css/print.css #{html} -o #{pdf}")
+    system("pandoc --pdf-engine=prince --css=lib/css/pdf.css #{html} -o #{pdf}")
   end
 end
 

@@ -1,0 +1,33 @@
+#CONVERTINATOR
+
+Convertinator is a Ruby & Web Standards tool for producing HTML and PDF ebooks out of source Markdwow files. Specificaly, it:
+
+1. merges a number of Markdown files across a number of (nested) directories
+2. converts this resultant Markdown file into nicely-formatted HTML and PDF versions.
+
+##Project structure
+Convertinator expects a certain naming convention for directory and file names. Take a look at the following content folder:
+
+├── 1-file.mdown
+├── 2-file-hello-world.mdown
+├── 3-dir
+│   ├── 1-file.mdown
+│   └── 4-dir
+│       ├── 1-file.mdown
+│       └── 2-file.mdown
+├── 4-file.mdown
+├── README.mdown
+├── TODO.txt
+
+A directory or file in the above structure will be treated as content (i.e., merged and converted in the order of listing) if it follows the format 'x-foo', where 'x' is its number in the content hierarchy and 'foo' is the file name. Any other content will be ignored by Convertinator.
+
+As both directories and files follow this format, content hierarchies can be both ordered and infinitely nestable, which allows for their flexible organization by the content creator.
+
+##Usage
+1. Install Prince XML [link] for PDF generation.
+2. Download Convertinator; navigate to the '/build' directory.
+3. Generate output files with '$ ruby driver.rb' at the command line.
+4. Replace the test files in the top directory with your own content.
+
+
+

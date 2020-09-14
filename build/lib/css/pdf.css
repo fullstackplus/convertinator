@@ -1,0 +1,153 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400&display=swap');
+
+:root {
+  --grey: #eee;
+  --font-size: 11pt;
+  --line-height: 1.5;
+  --factor: 1.15; /* not used */
+  --v-rhythm: 27.5pt;    /* (11+11*1.5)   */
+  --v-rhythm-2: 13.75pt; /* (11+11*1.5)/2 */
+  --v-rhythm-3: 9.16pt;  /* (11+11*1.5)/3 */
+}
+
+html { font-size: var(--font-size); }
+
+/*
+  p { font-size: 1em; }
+
+   h1 { font-size: 3em; }
+   h2 { font-size: 2em; }
+   h3 { font-size: 1.7em; }
+   h4 { font-size: 1.3em; }
+   h5 { font-size: 1.1em; }
+   h6 { font-size: 1em; }
+
+   p.leade { font-size: 1.25em; }
+*/
+
+@media print {
+
+  /* Set main content containers */
+   #content, #page {
+   width: 100%;
+   margin: 0;
+   float: none;
+  }
+
+  /* Set page margins */
+  @page { margin: 2cm }
+
+  /*
+   Set document font and size; for pixel to point conversion, see:
+   http://www.endmemo.com/sconvert/pixelpoint.php
+  */
+  body {
+   font-family: 'Helvetica Neue', sans-serif;
+   line-height: var(--line-height);
+   background: #fff !important;
+   color: #000;
+  }
+
+  h1 {
+    font-size: 24pt;
+    font-family: 'Oswald', sans-serif;
+    margin-top: 0;
+    margin-bottom: var(--v-rhythm-3);
+  }
+  h2 {
+    font-size: 19pt;
+    margin-top: 0;
+    margin-bottom: var(--v-rhythm-3);
+  }
+  h3 { font-size: 15pt; }
+  h4 { font-size: 12pt; }
+  h5 { font-size: 11pt; }
+  h6 { font-size: 11pt; }
+
+  /*
+    Margins set as multiple of vertical rhythm:
+    font size + line height = 11+11*1.5; see:
+    https://24ways.org/2006/compose-to-a-vertical-rhythm
+  */
+  h3, h4, h5, h6 {
+    line-height: 1;
+    margin-top: var(--v-rhythm);
+    margin-bottom: var(--v-rhythm-3);
+  }
+
+  /* Set page breaks */
+  h2 { page-break-before: always; }
+  a, blockquote, table, pre, h1, h2, h3, h4, h5, h6, img { page-break-inside: avoid; }
+  h1, h2, h3, h4, h5, h6 img { page-break-after: avoid; }
+  ul, ol, dl { page-break-before: avoid }
+
+  /* Set link color */
+  a:link, a:visited, a {
+   background: transparent;
+   color: #520;
+   font-weight: bold;
+   text-decoration: underline;
+   text-align: left;
+  }
+
+  /* Print URLs to linked resources
+   *
+  a[href^=http]:after { content:" <" attr(href) "> "; }
+  $a:after > img { content: ""; }
+  article a[href^="#"]:after { content: ""; }
+  a:not(:local-link):after { content:" <" attr(href) "> "; }
+  */
+
+  /* Hide embedded videos and remove whitespace around iframes */
+  .entry iframe, ins {
+    display: none;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    line-height: 0pt !important;
+    white-space: nowrap;
+  }
+  .embed-youtube, .embed-responsive {
+    position: absolute;
+    height: 0;
+    overflow: hidden;
+  }
+
+  /* Hide the following elements */
+  #header-widgets, nav, aside.mashsb-container,
+  .sidebar, .mashshare-top, .mashshare-bottom,
+  .content-ads, .make-comment, .author-bio,
+  .heading, .related-posts, #decomments-form-add-comment,
+  #breadcrumbs, #footer, .post-byline, .meta-single,
+  .site-title img, .post-tags, .readability { display: none; }
+
+  /* Insert custom content at following elements */
+  .entry:after {
+    content: "\ All rights reserved. (c) 2020 Vahagn Hay - fullstackplus.tech";
+    color: #999 !important;
+    font-size: 1em;
+    padding-top: 30px;
+  }
+  #header:before {
+    content: "\ Please see www.mysite.com for the latest version of this information.";
+    color: #777 !important;
+    font-size: 1em;
+    padding-top: 30px;
+    text-align: center !important;
+  }
+
+  /* Emphasize important elements */
+  p, address, li, dt, dd, blockquote { font-size: 100%; }
+
+  /* Set font for code listings */
+  code, pre { font-family: Monaco, monospace; }
+
+  /* Format lists */
+/*  ul, ol {
+   list-style: square; margin-left: 18pt;
+   margin-bottom: 20pt;
+  }
+
+  li { line-height: 1.6em; }*/
+
+}
