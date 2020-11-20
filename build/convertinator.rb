@@ -3,7 +3,7 @@ require 'pathname'
 require 'pry'
 
 # imports Redcarpet functionality as object
-RENDERER = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true)
+RENDERER = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true, footnotes: true)
 
 STARTDIR = File.expand_path("..", Dir.pwd)
 

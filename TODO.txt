@@ -1,7 +1,21 @@
 #TODO
 
+0. Place output files relative to 'img' directory — on both per-file and per-project level. Image paths are not thought out well. 
 4. I can pass args to Convertinator on the command line?
 5. Convertinator as a gem.
+
+NEW API:
+
+convert_dir(startdir)
+-> places output inside the input dir
+
+(What if the dirs are nested? At which level do you place the images?) 
+
+convert_file(path)
+-> places output inside the input dir 
+
+convert_project
+-> places output inside the root dir 
 
 #DONE
 0. Traverse all dirs recursively from root, printing their names 
