@@ -30,6 +30,8 @@ Contents of file one.
 
 Contents of file two.
 
+<img src="img/autumn-leaves.jpg" alt="Autumn leaves" />
+
 #FILE 3
 
 Contents of file three.

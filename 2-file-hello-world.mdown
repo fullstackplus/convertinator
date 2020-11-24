@@ -1,3 +1,11 @@
 #FILE 2
 
 Contents of file two.
+
+<!-- <img src="img/autumn-leaves.jpg" alt="Autumn leaves" /> -->
+
+<!-- both work, but only in md->html: -->
+![Autumn leaves](img/autumn-leaves.jpg "Autumn leaves")
+![Autumn leaves](./img/autumn-leaves.jpg "Autumn leaves")
+
+https://stackoverflow.com/questions/41604263/how-do-i-display-local-image-in-markdown

@@ -7,9 +7,6 @@ RENDERER = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tabl
 
 STARTDIR = File.expand_path("..", Dir.pwd)
 
-# output directory is a 'sensible default' but can  be overrriden here:
-OUTPUTDIR = ''
-
 module Convertinator
   extend self
 
@@ -18,7 +15,7 @@ module Convertinator
   end
 
   def fileformat(name)
-    File.join(Dir.pwd, "#{project_name}.#{name}")
+    File.join(STARTDIR, "#{project_name}.#{name}")
   end
 
   def abspath(relpath)
@@ -28,11 +25,11 @@ module Convertinator
   def path_to(filename, format)
     name_strings = filename.split('.')[0].split('/').join '_'
     name_string = [project_name, name_strings].join '_'
-    File.join(Dir.pwd, "#{name_string}.#{format}")
+    File.join(STARTDIR, "#{name_string}.#{format}")
   end
 
   def buildfile_path(filename)
-   File.join(Dir.pwd, OUTPUTDIR, 'lib', filename)
+   File.join(Dir.pwd, 'lib', filename)
   end
 
   # Match at the start of the line: one or more digit,
@@ -100,6 +97,11 @@ module Convertinator
     markdown = fileformat('mdown')
     traverse_and_merge(startdir, markdown)
     markdown
+  end
+
+  # TESTME
+  def convert_project
+    convert_dir(STARTDIR)
   end
 
   def convert_dir(startdir)
