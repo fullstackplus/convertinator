@@ -6,9 +6,9 @@ Contents of file one.
 
 Contents of file two.
 
-<!-- <img src="img/autumn-leaves.jpg" alt="Autumn leaves" /> -->
+![Autumn leaves](img/autumn-leaves.jpg "Autumn leaves")
 
-![Autumn leaves](./img/autumn-leaves.jpg "Autumn leaves")
+
 
 #FILE 3
 

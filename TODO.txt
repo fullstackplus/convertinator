@@ -34,3 +34,19 @@ convert_project
 
 https://tex.stackexchange.com/questions/253262/pandoc-markdown-to-pdf-doesnt-show-images
 
+
+![Autumn leaves](img/autumn-leaves.jpg "Autumn leaves")
+![Autumn leaves](./img/autumn-leaves.jpg "Autumn leaves") 
+
+^ both work:
+https://stackoverflow.com/questions/41604263/how-do-i-display-local-image-in-markdown 
+
+
+This converts .md to .pdf on the CL:
+$ pandoc --pdf-engine=prince -s -o doc.pdf convertinator.mdown 
+
+Unstyled, though — add styleshet on the CL (look up WW)
+
+
+
+
