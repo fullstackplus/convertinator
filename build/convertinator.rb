@@ -122,6 +122,8 @@ module Convertinator
 
     File.open(file, 'w') do |f|
       f.write(File.read(buildfile_path('header.html')))
+      # TODO: write tabs for better indentation
+      # f.write "\t\t\t"
       f.write html
       f.write(File.read(buildfile_path('footer.html')))
     end
@@ -135,7 +137,10 @@ module Convertinator
     else
       path_to(outputfile, 'pdf')
     end
-    system("pandoc --pdf-engine=prince --css=lib/css/pdf.css #{html} -o #{pdf}")
+
+    Dir.chdir(STARTDIR) {
+      system("pandoc --pdf-engine=prince --css=build/lib/css/pdf.css #{html} -o #{pdf}")
+    }
   end
 end
 

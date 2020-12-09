@@ -47,6 +47,22 @@ $ pandoc --pdf-engine=prince -s -o doc.pdf convertinator.mdown
 
 Unstyled, though — add styleshet on the CL (look up WW)
 
+These two both include images. Problems:
 
+1. .md to .pdf does not parse the Markdown
+2. images are oversized in both, likely because they're unstyled.
+
+Main takeaway: run the 'pandoc' command from the root dir.
+
+MD -> PDF
+$ pandoc --pdf-engine=prince --css=build/lib/css/pdf.css -s -o from-md.pdf convertinator.mdown 
+
+HTML -> PDF
+$ pandoc --pdf-engine=prince --css=build/lib/css/pdf.css -s -o from-html.pdf convertinator.html
+
+How to change directory in which to run a shell command:
+https://stackoverflow.com/questions/10147913/ruby-run-shell-command-in-a-specific-directory
+
+BINGO. Problem solved.
 
 
