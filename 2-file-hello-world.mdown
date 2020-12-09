@@ -3,5 +3,3 @@
 Contents of file two.
 
 ![Autumn leaves](img/autumn-leaves.jpg "Autumn leaves")
-
-

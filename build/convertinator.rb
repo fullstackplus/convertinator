@@ -99,11 +99,11 @@ module Convertinator
     markdown
   end
 
-  # TESTME
   def convert_project
     convert_dir(STARTDIR)
   end
 
+  # TODO: testme
   def convert_dir(startdir)
     to_pdf(merge_markdown(startdir))
   end

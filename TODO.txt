@@ -6,13 +6,13 @@
 
 NEW API:
 
-convert_dir(startdir)
--> places output inside the input dir
+convert_dir(somedir)
+-> places output inside the root dir
 
 (What if the dirs are nested? At which level do you place the images?) 
 
 convert_file(path)
--> places output inside the input dir 
+-> places output inside the root dir 
 
 convert_project
 -> places output inside the root dir 

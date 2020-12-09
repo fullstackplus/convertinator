@@ -2,6 +2,10 @@ require 'minitest/spec'
 require 'minitest/autorun'
 require_relative 'convertinator'
 
+def file_created? file
+  Dir.chdir(STARTDIR) { File.file? file }
+end
+
 describe "tests for merging markdown files and converting them into HTML" do
   # entire document
   markdown = Convertinator::fileformat('mdown')
@@ -12,13 +16,16 @@ describe "tests for merging markdown files and converting them into HTML" do
   html_file = 'convertinator_3-dir_1-file.html'
   pdf_file  = 'convertinator_3-dir_1-file.pdf'
 
+  # cleanup
   after do
-    File.delete(markdown) if File.exist? markdown
-    File.delete(html) if File.exist? html
-    File.delete(pdf) if File.exist? pdf
+    Dir.chdir(STARTDIR) do
+      File.delete(markdown) if File.exist? markdown
+      File.delete(html) if File.exist? html
+      File.delete(pdf) if File.exist? pdf
 
-    File.delete(html_file) if File.exist? html_file
-    File.delete(pdf_file) if File.exist? pdf_file
+      File.delete(html_file) if File.exist? html_file
+      File.delete(pdf_file) if File.exist? pdf_file
+    end
   end
 
   merged_contents = <<-EOT
@@ -30,7 +37,7 @@ Contents of file one.
 
 Contents of file two.
 
-<img src="img/autumn-leaves.jpg" alt="Autumn leaves" />
+![Autumn leaves](img/autumn-leaves.jpg "Autumn leaves")
 
 #FILE 3
 
@@ -54,7 +61,7 @@ EOT
   dir = File.expand_path("..", Dir.pwd)
   Convertinator.traverse_and_print dir
 
-  it "returns a list of files and directories, in the order it visits them" do
+  it "returns a list of files and directories, in the order visited" do
    _(Convertinator::traverse_and_merge(dir, markdown))
    .must_equal [1, 2, 3, 1, 4, 1, 2, 4]
    # .must_equal [1, 2, [3, [1], [4, [1, 2]], 4]]
@@ -65,18 +72,26 @@ EOT
    _(File.read(markdown)).must_equal merged_contents
   end
 
-  it "converts specified Markdown file to HTML and PDF" do
+  it "converts specified Markdown file to all formats" do
    Convertinator::convert_file('3-dir/1-file.mdown')
 
-   _(File.file?(html_file)).must_equal true
-   _(File.file?(pdf_file)).must_equal true
+   _(file_created?(html_file)).must_equal true
+   _(file_created?(pdf_file)).must_equal true
   end
 
-  it "converts the entire Markdown document to HTML and PDF from default directory (root)" do
-    Convertinator::convert_dir('..')
+  # it "converts specified directory to all formats" do
+  #   Convertinator::convert_dir('3-dir')
 
-    _(File.file?(markdown)).must_equal true
-    _(File.file?(html)).must_equal true
-    _(File.file?(pdf)).must_equal true
+  #   _(file_created?(markdown)).must_equal true
+  #   _(file_created?(html)).must_equal true
+  #   _(file_created?(pdf)).must_equal true
+  # end
+
+  it "converts the entire project starting from root directory" do
+    Convertinator::convert_project
+
+    _(file_created?(markdown)).must_equal true
+    _(file_created?(html)).must_equal true
+    _(file_created?(pdf)).must_equal true
   end
 end
