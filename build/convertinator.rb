@@ -99,19 +99,28 @@ module Convertinator
     markdown
   end
 
+  # TODO
   def convert_project
+    # this works
     convert_dir(STARTDIR)
+
+    # needed: create path within this method:
+    # convert_dir("..")
   end
 
   # TODO: testme
-  def convert_dir(startdir)
-    to_pdf(merge_markdown(startdir))
+  # def convert_dir(path)
+  # end
+
+  def convert_dir(path)
+    to_pdf(merge_markdown(path))
   end
 
   def convert_file(relpath)
     to_pdf(abspath(relpath), relpath)
   end
 
+  # (str, str)
   def to_html(markdown, outputfile="")
     html = RENDERER.render(File.read(markdown))
     file = if outputfile.empty?
@@ -130,6 +139,7 @@ module Convertinator
     file
   end
 
+  # (str, str)
   def to_pdf(markdown, outputfile="")
     html = to_html(markdown, outputfile)
     pdf = if outputfile.empty?

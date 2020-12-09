@@ -7,14 +7,19 @@ def file_created? file
 end
 
 describe "tests for merging markdown files and converting them into HTML" do
-  # entire document
+  # single file
+  html_file = 'convertinator_3-dir_1-file.html'
+  pdf_file  = 'convertinator_3-dir_1-file.pdf'
+
+  # specified dir
+  markdown_dir = 'convertinator_3-dir.mdown'
+  html_dir     = 'convertinator_3-dir.html'
+  pdf_dir      = 'convertinator_3-dir.pdf'
+
+  # entire project
   markdown = Convertinator::fileformat('mdown')
   html     = Convertinator::fileformat('html')
   pdf      = Convertinator::fileformat('pdf')
-
-  # a single file
-  html_file = 'convertinator_3-dir_1-file.html'
-  pdf_file  = 'convertinator_3-dir_1-file.pdf'
 
   # cleanup
   after do
@@ -79,12 +84,13 @@ EOT
    _(file_created?(pdf_file)).must_equal true
   end
 
+  # TODO
   # it "converts specified directory to all formats" do
   #   Convertinator::convert_dir('3-dir')
 
-  #   _(file_created?(markdown)).must_equal true
-  #   _(file_created?(html)).must_equal true
-  #   _(file_created?(pdf)).must_equal true
+  #   _(file_created?(markdown_dir)).must_equal true
+  #   _(file_created?(html_dir)).must_equal true
+  #   _(file_created?(pdf_dir)).must_equal true
   # end
 
   it "converts the entire project starting from root directory" do
