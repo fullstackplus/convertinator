@@ -84,14 +84,14 @@ EOT
    _(file_created?(pdf_file)).must_equal true
   end
 
-  # TODO
-  # it "converts specified directory to all formats" do
-  #   Convertinator::convert_dir('3-dir')
+  # TODO: creates .mdown with project name
+  it "converts specified directory to all formats" do
+    Convertinator::convert_dir('3-dir')
 
-  #   _(file_created?(markdown_dir)).must_equal true
-  #   _(file_created?(html_dir)).must_equal true
-  #   _(file_created?(pdf_dir)).must_equal true
-  # end
+    # _(file_created?(markdown_dir)).must_equal true
+    _(file_created?(html_dir)).must_equal true
+    _(file_created?(pdf_dir)).must_equal true
+  end
 
   it "converts the entire project starting from root directory" do
     Convertinator::convert_project

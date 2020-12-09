@@ -99,22 +99,28 @@ module Convertinator
     markdown
   end
 
-  # TODO
-  def convert_project
-    # this works
-    convert_dir(STARTDIR)
-
-    # needed: create path within this method:
-    # convert_dir("..")
-  end
-
-  # TODO: testme
-  # def convert_dir(path)
+  # def merge_markdown(dirname="")
+  #   path = dirname.empty? ? STARTDIR : abspath(dirname)
+  #   markdown = fileformat('mdown')
+  #   traverse_and_merge(path, markdown)
+  #   markdown
   # end
 
-  def convert_dir(path)
-    to_pdf(merge_markdown(path))
+  def convert_project
+    convert_dir
   end
+
+  # TODO: when creating .mdown file, defaults to project name
+  def convert_dir(name="")
+    dirpath = name.empty? ? STARTDIR : abspath(name)
+    markdown = merge_markdown(dirpath)
+    to_pdf(markdown, name)
+  end
+
+  # WORX
+  # def convert_dir(path)
+  #   to_pdf(merge_markdown(path))
+  # end
 
   def convert_file(relpath)
     to_pdf(abspath(relpath), relpath)
