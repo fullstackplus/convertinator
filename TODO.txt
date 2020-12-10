@@ -1,21 +1,18 @@
 #TODO
-
-0. Place output files relative to 'img' directory — on both per-file and per-project level. Image paths are not thought out well. 
+0. New naming convention troughout
+1. Refactor CSS files according to the Decorator pattern — with overrides for different effects (content genres like ebook, doc, etc)
 4. I can pass args to Convertinator on the command line?
 5. Convertinator as a gem.
 
 NEW API:
 
-convert_dir(somedir)
--> places output inside the root dir
+* convert_file(filename)
+* convert_dir(dirname)
+* convert_project
 
-(What if the dirs are nested? At which level do you place the images?) 
+All three place the output inside the root dir.
 
-convert_file(path)
--> places output inside the root dir 
-
-convert_project
--> places output inside the root dir 
+Images are stored at root level, regardless of the level of content that includes the images. 
 
 #DONE
 0. Traverse all dirs recursively from root, printing their names 
@@ -30,7 +27,7 @@ convert_project
 9. Issuing shell commands from Ruby (Ruby runs Pandoc), one single pipeline out of multiple steps
 1. Tests for PDF generation
 2. Converting single files to PDF
-
+0. Place output files relative to 'img' directory — on both per-file and per-project level. 
 
 https://tex.stackexchange.com/questions/253262/pandoc-markdown-to-pdf-doesnt-show-images
 

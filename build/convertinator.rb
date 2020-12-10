@@ -2,10 +2,12 @@ require 'redcarpet'
 require 'pathname'
 require 'pry'
 
-# imports Redcarpet functionality as object
+# imports Redcarpet functionality
 RENDERER = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tables: true, footnotes: true)
 
 STARTDIR = File.expand_path("..", Dir.pwd)
+
+# TODO: describe naming convention.
 
 module Convertinator
   extend self
@@ -93,34 +95,31 @@ module Convertinator
     ids
   end
 
-  def merge_markdown(startdir)
-    markdown = fileformat('mdown')
-    traverse_and_merge(startdir, markdown)
-    markdown
-  end
-
-  # def merge_markdown(dirname="")
-  #   path = dirname.empty? ? STARTDIR : abspath(dirname)
+  # def merge_markdown(dirname)
   #   markdown = fileformat('mdown')
-  #   traverse_and_merge(path, markdown)
+  #   traverse_and_merge(dirname, markdown)
   #   markdown
   # end
+
+  def merge_markdown(dirname, outputfile="")
+    outputpath = if outputfile.empty?
+      fileformat('mdown')
+    else
+      path_to(outputfile, 'mdown')
+    end
+    traverse_and_merge(dirname, outputpath)
+    outputpath
+  end
 
   def convert_project
     convert_dir
   end
 
-  # TODO: when creating .mdown file, defaults to project name
-  def convert_dir(name="")
-    dirpath = name.empty? ? STARTDIR : abspath(name)
-    markdown = merge_markdown(dirpath)
-    to_pdf(markdown, name)
+  def convert_dir(outputfile="")
+    dirpath = outputfile.empty? ? STARTDIR : abspath(outputfile)
+    markdown = merge_markdown(dirpath, outputfile)
+    to_pdf(markdown, outputfile)
   end
-
-  # WORX
-  # def convert_dir(path)
-  #   to_pdf(merge_markdown(path))
-  # end
 
   def convert_file(relpath)
     to_pdf(abspath(relpath), relpath)

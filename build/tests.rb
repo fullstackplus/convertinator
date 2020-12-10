@@ -7,11 +7,11 @@ def file_created? file
 end
 
 describe "tests for merging markdown files and converting them into HTML" do
-  # single file
+  # a single file
   html_file = 'convertinator_3-dir_1-file.html'
   pdf_file  = 'convertinator_3-dir_1-file.pdf'
 
-  # specified dir
+  # a specified dir
   markdown_dir = 'convertinator_3-dir.mdown'
   html_dir     = 'convertinator_3-dir.html'
   pdf_dir      = 'convertinator_3-dir.pdf'
@@ -24,12 +24,20 @@ describe "tests for merging markdown files and converting them into HTML" do
   # cleanup
   after do
     Dir.chdir(STARTDIR) do
-      File.delete(markdown) if File.exist? markdown
-      File.delete(html) if File.exist? html
-      File.delete(pdf) if File.exist? pdf
+      [ # file
+        html_file,
+        pdf_file,
 
-      File.delete(html_file) if File.exist? html_file
-      File.delete(pdf_file) if File.exist? pdf_file
+        # dir
+        markdown_dir,
+        html_dir,
+        pdf_dir,
+
+        # project
+        markdown,
+        html,
+        pdf
+      ].each { |f| File.delete(f) if File.exist?(f) }
     end
   end
 
@@ -84,11 +92,10 @@ EOT
    _(file_created?(pdf_file)).must_equal true
   end
 
-  # TODO: creates .mdown with project name
   it "converts specified directory to all formats" do
     Convertinator::convert_dir('3-dir')
 
-    # _(file_created?(markdown_dir)).must_equal true
+    _(file_created?(markdown_dir)).must_equal true
     _(file_created?(html_dir)).must_equal true
     _(file_created?(pdf_dir)).must_equal true
   end
