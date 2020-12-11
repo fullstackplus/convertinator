@@ -1,12 +1,14 @@
 #CONVERTINATOR
 
-Convertinator is a Ruby & Web Standards tool for producing HTML and PDF ebooks out of source Markdwow files. Specificaly, it:
+(concatenates & converts)
+
+Convertinator is a tool for authoring ebooks in Markdown. Specifically, it:
 
 1. merges a number of Markdown files across a number of (nested) directories
-2. converts this resultant Markdown file into nicely-formatted HTML and PDF versions.
+2. converts the resultant Markdown file into nicely-formatted HTML and PDF versions.
 
 ##Project structure
-Convertinator expects a certain naming convention for directory and file names. Take a look at the following content folder:
+Convertinator expects a certain naming convention for directory and file names. Take a look at the following folder:
 
 ├── 1-file.mdown
 ├── 2-file-hello-world.mdown
@@ -19,15 +21,32 @@ Convertinator expects a certain naming convention for directory and file names. 
 ├── README.mdown
 ├── TODO.txt
 
-A directory or file in the above structure will be treated as content (i.e., merged and converted in the order of listing) if it follows the format 'x-foo', where 'x' is its number in the content hierarchy and 'foo' is the file name. Any other content will be ignored by Convertinator.
+The format 'x-foo', where 'x' is the number in the content hierarchy, and 'foo' is the file (or directory) name, signals "content" to Convertinator. Such content will be merged and converted in the order of listing. Any other content will be ignored.
 
-As both directories and files follow this format, content hierarchies can be both ordered and infinitely nestable, which allows for their flexible organization by the content creator.
+When writing a non-trivial piece of content, one's workflow is spiral-like and iterative. Besides writing, one is constantly moving, renaming, deleting, and adding directories and files. One also likely maintains a number of supporting files (research, references) that aren't supposed to be part of the final product (as in the [link:Zettelkasten] methodology and its derivatives).
 
-##Usage
+Convertinator is designed for a flexible workflow that brigdes the gap between the mental model of content and its evolving organization when writing.
+
+##Installing
+Convertinator uses Ruby and Web Standards. 
+
 1. Install Prince XML [link] for PDF generation.
 2. Download Convertinator; navigate to the '/build' directory.
-3. Generate output files with '$ ruby driver.rb' at the command line.
+3. Run '$ ruby driver.rb' at the command line to generate output files.
 4. Replace the test files in the top directory with your own content.
 
+##API
+* convert_file(filename) will convert the specified file. Example:
+    - Convertinator::convert_file('3-dir/1-file.mdown')
+
+* convert_dir(dirname) will convert the specified directory. Example:
+    - Convertinator::convert_dir('3-dir/4-dir')
+
+* convert_project will convert the entire project, staring at root directory. 
+    
+    
 
 
+
+
+ 
