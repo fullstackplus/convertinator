@@ -38,8 +38,8 @@ module Convertinator
   # followed by a single dash, followed by any text.
   #
   # (str) -> Regex | nil
-  def content?(path)
-    File.basename(path).match /^[0-9]+\-{1}\w/
+  def content?(filename)
+    File.basename(filename).match /^[0-9]+\-{1}\w/
   end
 
   # Protoptype method. Traverses and prints only.
@@ -58,11 +58,11 @@ module Convertinator
     end
   end
 
-  def id(content)
-    if content.respond_to? 'split'
-      (content.split[1].to_s.split('-').first).to_i
+  def id(filename)
+    if filename.respond_to? 'split'
+      (filename.split[1].to_s.split('-').first).to_i
     else
-      (content.first.split[1].to_s.split('-').first).to_i
+      (filename.first.split[1].to_s.split('-').first).to_i
     end
   end
 
@@ -95,12 +95,6 @@ module Convertinator
     ids
   end
 
-  # def merge_markdown(dirname)
-  #   markdown = fileformat('mdown')
-  #   traverse_and_merge(dirname, markdown)
-  #   markdown
-  # end
-
   def merge_markdown(dirname, outputfile="")
     outputpath = if outputfile.empty?
       fileformat('mdown')
@@ -121,8 +115,8 @@ module Convertinator
     to_pdf(markdown, outputfile)
   end
 
-  def convert_file(relpath)
-    to_pdf(abspath(relpath), relpath)
+  def convert_file(filename)
+    to_pdf(abspath(filename), filename)
   end
 
   # (str, str)
@@ -136,8 +130,6 @@ module Convertinator
 
     File.open(file, 'w') do |f|
       f.write(File.read(buildfile_path('header.html')))
-      # TODO: write tabs for better indentation
-      # f.write "\t\t\t"
       f.write html
       f.write(File.read(buildfile_path('footer.html')))
     end
