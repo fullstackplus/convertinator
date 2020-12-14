@@ -1,5 +1,5 @@
 #TODO
-0. New naming convention troughout
+0. Documentation (possible with RDOC)
 1. Refactor CSS files according to the Decorator pattern — with overrides for different effects (content genres like ebook, doc, etc)
 4. I can pass args to Convertinator on the command line?
 5. Convertinator as a gem.
@@ -28,6 +28,7 @@ Images are stored at root level, regardless of the level of content that include
 1. Tests for PDF generation
 2. Converting single files to PDF
 0. Place output files relative to 'img' directory — on both per-file and per-project level. 
+0. New naming convention troughout
 
 https://tex.stackexchange.com/questions/253262/pandoc-markdown-to-pdf-doesnt-show-images
 

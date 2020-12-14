@@ -7,7 +7,14 @@ RENDERER = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tabl
 
 STARTDIR = File.expand_path("..", Dir.pwd)
 
-# TODO: describe naming convention.
+# In Ruby, path variables are expressed as strings.
+# To distinguish between different kinds of paths,
+# the following naming convention is used:
+#
+# 1. directory. Example: '3-dir'
+# 2. file or filename. Example: 'foo.mdown'
+# 3. path. Example: '3-dir/foo.mdown'
+# 4. content. Either 1 or 2 above.
 
 module Convertinator
   extend self
@@ -16,12 +23,12 @@ module Convertinator
     Pathname.new(STARTDIR).basename.to_s
   end
 
-  def fileformat(name)
-    File.join(STARTDIR, "#{project_name}.#{name}")
+  def fileformat(format)
+    File.join(STARTDIR, "#{project_name}.#{format}")
   end
 
-  def abspath(relpath)
-    File.join(STARTDIR, relpath)
+  def abspath(filename)
+    File.join(STARTDIR, filename)
   end
 
   def path_to(filename, format)
@@ -34,7 +41,7 @@ module Convertinator
    File.join(Dir.pwd, 'lib', filename)
   end
 
-  # Match at the start of the line: one or more digit,
+  # Match at the start of line: one or more digit,
   # followed by a single dash, followed by any text.
   #
   # (str) -> Regex | nil
@@ -42,7 +49,7 @@ module Convertinator
     File.basename(filename).match /^[0-9]+\-{1}\w/
   end
 
-  # Protoptype method. Traverses and prints only.
+  # Prototype method for traverse_and_merge(); only prints.
   def traverse_and_print(startdir, indent='')
     dir = Pathname.new startdir
     children = dir.children.sort
@@ -58,20 +65,21 @@ module Convertinator
     end
   end
 
-  def id(filename)
-    if filename.respond_to? 'split'
-      (filename.split[1].to_s.split('-').first).to_i
+  def id(content)
+    if content.respond_to? 'split'
+      (content.split[1].to_s.split('-').first).to_i
     else
-      (filename.first.split[1].to_s.split('-').first).to_i
+      (content.first.split[1].to_s.split('-').first).to_i
     end
   end
 
-  # Performs a depth-first traversal of the directory tree
-  # starting with the specified @startdir, merging .mdown
-  # files along the way into @outputpath.
+  # Performs a depth-first traversal of the directory tree,
+  # merging together .mdown files in the order visited.
   #
+  # @startdir: where the traversal starts
+  # @outputpath: for writing the resultant Markdown file
   # @indent: for pretty printing the directory tree
-  # @depth : for debugging
+  # @depth: for debugging
   #
   # (str, file, depth) -> nil
   def traverse_and_merge(startdir, outputpath, indent='', ids=[])
