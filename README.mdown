@@ -1,15 +1,16 @@
 #CONVERTINATOR
 
-(concatenates & converts)
+— concatenates & converts. A tool for writing ebooks in Markdown. 
 
-Convertinator is a tool for authoring ebooks in Markdown. Specifically, it:
+Specifically, Convertinator:
 
-1. merges a number of Markdown files across a number of (nested) directories
-2. converts the resultant Markdown file into nicely-formatted HTML and PDF versions.
+1. merges Markdown files across a number of (nested) directories
+2. converts the resultant single Markdown file into nicely-formatted HTML and PDF versions.
 
 ##Project structure
-Convertinator expects a certain naming convention for directory and file names. Take a look at the following folder:
+Take a look at the following content hierarchy:
 
+```
 ├── 1-file.mdown
 ├── 2-file-hello-world.mdown
 ├── 3-dir
@@ -20,31 +21,49 @@ Convertinator expects a certain naming convention for directory and file names. 
 ├── 4-file.mdown
 ├── README.mdown
 ├── TODO.txt
+```
 
-The format 'x-foo', where 'x' is the number in the content hierarchy, and 'foo' is the file (or directory) name, signals "content" to Convertinator. Such content will be merged and converted in the order of listing. Any other content will be ignored.
+As you can see, Convertinator uses number prefixes for files and directories in order to establish a content hierarchy:
 
-When writing a non-trivial piece of content, one's workflow is spiral-like and iterative. Besides writing, one is constantly moving, renaming, deleting, and adding directories and files. One also likely maintains a number of supporting files (research, references) that aren't supposed to be part of the final product (as in the [link:Zettelkasten] methodology and its derivatives).
+1. `x-filename.mdown` signals "content" to Convertinator. These files will be merged and converted in the order of listing. 
+2. `x-dirname` signals a directory containing Markdown files, so will be traversed and merged based on the rule above.
 
-Convertinator is designed for a flexible workflow that brigdes the gap between the mental model of content and its evolving organization when writing.
+Any other (non-prefixed) content will be ignored.
+
+##The Why
+Convertinator is designed to brigde the gap between one's mental model of the content, and how that content evolves in the process of writing. It is inspired by the [Zettelkasten method](https://zettelkasten.de/introduction/) and its derivatives.
+
+A non-trivial piece of content (an ebook, etc) appears linear and coherent in its final form. The workflow leading up to that finished product, however, can be very non-linear. Directories and files are moved around, renamed, deleted, added, branched, and merged.
+
+Additionally, one likely also maintains a number of supporting files that aren't meant as part of the final product but are essential for one's workflow — research notes, references, etc.
+
+In order to support this kind of workflow, Convertinator uses one universal convention for numbering files and folders, and is otherwise completely flexible as to how you choose to organize your content.
 
 ##Installing
 Convertinator uses Ruby and Web Standards. 
 
-1. Install Prince XML [link] for PDF generation.
-2. Download Convertinator; navigate to the '/build' directory.
-3. Run '$ ruby driver.rb' at the command line to generate output files.
-4. Replace the test files in the top directory with your own content.
+1. Install [Prince XML](https://www.princexml.com/doc/12/doc-install/) for PDF generation
+2. Download Convertinator; navigate to the `/build` directory.
+3. Run `$ ruby driver.rb` at the command line to generate an ebook.
+4. Replace the test files in the top directory with your own content
+5. Edit `driver.rb` to mirror your project structure.
 
-##API
-* convert_file(filename) will convert the specified file. Example:
-    - Convertinator::convert_file('3-dir/1-file.mdown')
+##Usage
+Call these methods from your `driver.rb`:
 
-* convert_dir(dirname) will convert the specified directory. Example:
-    - Convertinator::convert_dir('3-dir/4-dir')
+convert a specified file:
+```ruby
+Convertinator::convert_file('3-dir/1-file.mdown')
+```
+convert a specified directory:
+```ruby
+Convertinator::convert_dir('3-dir/4-dir')
+```
+convert the entire project, staring at root directory:
+```ruby
+Convertinator::convert_project
+```
 
-* convert_project will convert the entire project, staring at root directory. 
-    
-    
 
 
 

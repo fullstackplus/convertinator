@@ -7,14 +7,15 @@ RENDERER = Redcarpet::Markdown.new(Redcarpet::Render::HTML, autolink: true, tabl
 
 STARTDIR = File.expand_path("..", Dir.pwd)
 
-# In Ruby, path variables are expressed as strings.
-# To distinguish between different kinds of paths,
-# the following naming convention is used:
+# To distinguish between different kinds of paths
+# (which in Ruby are all strings), Convertinator
+# uses the following naming convention for path
+# variables:
 #
-# 1. directory. Example: '3-dir'
-# 2. file or filename. Example: 'foo.mdown'
-# 3. path. Example: '3-dir/foo.mdown'
-# 4. content. Either 1 or 2 above.
+# 1. 'directory', as in '3-dir'
+# 2. 'file' or 'filename', as in 'foo.mdown'
+# 3. 'path' (composite), as in '3-dir/foo.mdown'
+# 4. 'content' refers to either 1) or 2) above.
 
 module Convertinator
   extend self
