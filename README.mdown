@@ -31,7 +31,7 @@ As you can see, Convertinator uses number prefixes for files and directories in 
 Any other (non-prefixed) content will be ignored.
 
 ## The Why
-Convertinator is designed to brigde the gap between one's mental model of the content, and how that content evolves in the process of writing. It is inspired by the [Zettelkasten method](https://zettelkasten.de/introduction/) and its derivatives.
+Convertinator is designed to bridge the gap between one's mental model of the content, and how that content evolves in the process of writing. It is inspired by the [Zettelkasten method](https://zettelkasten.de/introduction/) and its derivatives.
 
 A non-trivial piece of content (an ebook, etc) appears linear and coherent in its final form. The workflow leading up to that finished product, however, can be very non-linear. Directories and files are moved around, renamed, deleted, added, branched, and merged.
 
