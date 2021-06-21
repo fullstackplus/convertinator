@@ -64,8 +64,3 @@ convert the entire project, staring at root directory:
 Convertinator::convert_project
 ```
 
-
-
-
-
- 
