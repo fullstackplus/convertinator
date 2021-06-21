@@ -49,10 +49,10 @@ Convertinator uses Ruby and Web Standards.
 5. Edit `driver.rb` to mirror your project structure.
 
 ## Usage
-Call these methods from your `driver.rb`:
+Call these methods from your `driver.rb`.
 
-convert a specified file:
 ```ruby
+#convert a specified file:
 Convertinator::convert_file('3-dir/1-file.mdown')
 ```
 convert a specified directory:
