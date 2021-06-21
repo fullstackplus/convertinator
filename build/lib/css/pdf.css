@@ -118,7 +118,7 @@ html { font-size: var(--font-size); }
 
   /* Insert custom content at following elements */
   .entry:after {
-    content: "\ All rights reserved. (c) 2020 Vahagn Hay - fullstackplus.tech";
+    content: "\ All rights reserved. (c) 2020 Vahagn Hay — http://fullstackplus.tech";
     color: #999 !important;
     font-size: 1em;
     padding-top: 30px;
