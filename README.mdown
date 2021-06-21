@@ -51,15 +51,15 @@ Convertinator uses Ruby and Web Standards.
 ## Usage
 Call these methods from your `driver.rb`.
 
-convert a specified file:
+Convert a specified file:
 ```ruby
 Convertinator::convert_file('3-dir/1-file.mdown')
 ```
-convert a specified directory:
+Convert a specified directory:
 ```ruby
 Convertinator::convert_dir('3-dir/4-dir')
 ```
-convert the entire project, staring at root directory:
+Convert the entire project, staring at root directory:
 ```ruby
 Convertinator::convert_project
 ```
