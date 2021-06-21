@@ -77,6 +77,8 @@ module Convertinator
   # Performs a depth-first traversal of the directory tree,
   # merging together .mdown files in the order visited.
   #
+  # Params:
+  #
   # +startdir+:: where the traversal starts
   # +outputpath+:: for writing the resultant Markdown file
   # +indent+:: for pretty printing the directory tree
