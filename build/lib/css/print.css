@@ -1,0 +1,9 @@
+  /* Print URLs to linked resources  */
+  a[href^=http]:after { content:" <" attr(href) "> "; }
+
+  $a:after > img { content: ""; }
+
+  article a[href^="#"]:after { content: ""; }
+
+  a:not(:local-link):after { content:" <" attr(href) "> "; }
+
