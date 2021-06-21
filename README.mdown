@@ -42,10 +42,10 @@ In order to support this kind of workflow, Convertinator uses one universal conv
 ## Installing
 Convertinator uses Ruby and Web Standards. 
 
-1. Install [Prince XML](https://www.princexml.com/doc/12/doc-install/) for PDF generation
+1. Install [Prince XML](https://www.princexml.com/doc/12/doc-install/) for PDF generation.
 2. Download Convertinator; navigate to the `/build` directory.
 3. Run `$ ruby driver.rb` at the command line to generate an ebook.
-4. Replace the test files in the top directory with your own content
+4. Replace the test files in the top directory with your own content.
 5. Edit `driver.rb` to mirror your project structure.
 
 ## Usage
