@@ -12,10 +12,10 @@ STARTDIR = File.expand_path("..", Dir.pwd)
 # uses the following naming convention for path
 # variables:
 #
-# 1. 'directory', as in '3-dir'
-# 2. 'file' or 'filename', as in 'foo.mdown'
-# 3. 'path' (composite), as in '3-dir/foo.mdown'
-# 4. 'content' refers to either 1) or 2) above.
+# 1. +directory, as in '3-dir'
+# 2. +file+' or +filename+, as in 'foo.mdown'
+# 3. +path+ (composite), as in '3-dir/foo.mdown'
+# 4. +content+ refers to either 1) or 2) above.
 
 module Convertinator
   extend self
@@ -77,10 +77,10 @@ module Convertinator
   # Performs a depth-first traversal of the directory tree,
   # merging together .mdown files in the order visited.
   #
-  # @startdir: where the traversal starts
-  # @outputpath: for writing the resultant Markdown file
-  # @indent: for pretty printing the directory tree
-  # @depth: for debugging
+  # +startdir+:: where the traversal starts
+  # +outputpath+:: for writing the resultant Markdown file
+  # +indent+:: for pretty printing the directory tree
+  # +depth+:: for debugging
   #
   # (str, file, depth) -> nil
   def traverse_and_merge(startdir, outputpath, indent='', ids=[])
